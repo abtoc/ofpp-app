@@ -25,8 +25,9 @@ class Person(db.Model):
     timerule_id = db.Column(db.String(36), db.ForeignKey('timerules.id')) # タイムテーブル
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
-    recipient = db.relationship('Recipient', uselist=False, back_populates="person")
-    timerule = db.relationship('TimeRule', back_populates='parents')
+    @property
+    def display_or_name(self):
+        return self.display if bool(self.display) else self.name
 
 # 受給者証テーブル
 class Recipient(db.Model):
@@ -46,7 +47,6 @@ class Recipient(db.Model):
     apply_out = db.Column(db.Date, nullable=True)       # 適用決定終了日
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
-    person = db.relationship('Person', back_populates="recipient")
 
 # 実績記録表
 class PerformLog(db.Model):
@@ -77,7 +77,6 @@ class PerformLog(db.Model):
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
-    absencelog = db.relationship('AbsenceLog', uselist=False, back_populates="performlog")
 
 # 欠席時対応加算記録
 class AbsenceLog(db.Model):
@@ -101,7 +100,6 @@ class AbsenceLog(db.Model):
     remarks = db.Column(db.String(128))              # 相談援助
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
-    performlog = db.relationship('PerformLog', back_populates="absencelog")
 
 # 勤怠記録表
 class WorkLog(db.Model):
@@ -159,7 +157,6 @@ class TimeRule(db.Model):
     rules = db.Column(db.Text)                          # ルール(JSON)
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
-    persons = db.relationship('Person', back_populates='timerule')
 
 # オプション
 class Option(db.Model):
