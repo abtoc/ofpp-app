@@ -1,3 +1,4 @@
+dateutils==0.6.6
 Flask==1.0.2
 Flask-Script==2.0.6
 pypugjs==5.7.1

@@ -5,4 +5,5 @@ app.config.from_object('flaskr.config')
 app.config.from_pyfile('config.py', silent=True)
 app.jinja_env.add_extension('pypugjs.ext.jinja.PyPugJSExtension')
 
+import flaskr.helpers
 import flaskr.views
