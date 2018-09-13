@@ -30,6 +30,7 @@ class PersonService(Person):
         if result is None:
             abort(404)
         return result
+    @classmethod
     def get_idm(cls, idm):
         return cls.query.filter(cls.idm == idm).first()
     @classmethod

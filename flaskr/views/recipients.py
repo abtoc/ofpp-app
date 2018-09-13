@@ -8,8 +8,6 @@ bp = Blueprint('recipients', __name__, url_prefix='/recipients')
 @bp.route('/')
 def index():
     items = RecipientService.get_all()
-    for item in items:
-        print(item.person)
     return render_template('recipients/index.pug', items=items)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])

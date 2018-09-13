@@ -33,6 +33,9 @@ class Person(db.Model):
     @property
     def recipient(self):
         return Recipient.query.filter(Recipient.person_id == self.id).first()
+    @property
+    def timerule(self):
+        return TimeRule.query.filter(TimeRule.id == self.timerule_id).first()
 
 # 受給者証テーブル
 class Recipient(db.Model):

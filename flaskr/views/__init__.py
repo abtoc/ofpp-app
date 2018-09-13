@@ -11,3 +11,5 @@ from flaskr.views.recipients import bp
 app.register_blueprint(recipients.bp)
 from flaskr.views.staffs import bp
 app.register_blueprint(staffs.bp)
+from flaskr.views.timerules import bp
+app.register_blueprint(timerules.bp)
