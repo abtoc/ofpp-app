@@ -31,7 +31,7 @@ html(lang="ja")
                                 li: a(href="{{ url_for('persons.index') }}") 利用者登録
                                 li: a(href="{{ url_for('recipients.index') }}") 受給者証登録
                                 li: a(href="{{ url_for('staffs.index') }}") 職員登録
-                                li: a(href="#") アイテム２４
+                                li: a(href="{{ url_for('users.index') }}") ユーザ登録
                         li.dropdown
                             a.dropdown-toggle(data-toggle="dropdown",role="button") 設定
                             ul.dropdown-menu(role="menu")
@@ -43,3 +43,4 @@ html(lang="ja")
             for category, message in get_flashed_messages(with_categories=true)
                 div(class="alert alert-{{ category }}",role="alert")= message
             block content
+        script(src="{{ url_for('static', filename='js/confirm.min.js') }}")

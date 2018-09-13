@@ -1,24 +1,24 @@
-extends timerules/layout.pug
+extends users/layout.pug
 
 block title
-  | タイムテーブル一覧 - ペタペタシステム
+  | ユーザ一覧 - ペタペタシステム
 block content
     table.table.table-hover
         thead
             tr
-                th 名前
+                th ユーザID
                 th 作成日
                 th 更新日
                 th
         tbody
             for item in items
                 tr
-                    td= item.caption
+                    td= item.userid
                     td= item.create_at | strftime('%Y/%m/%d %H:%M')
                     td= item.update_at | strftime('%Y/%m/%d %H:%M')
                     td: .text-right: .btn-group
-                        a.btn-sm.btn-primary(href="{{ url_for('timerules.edit', id=item.id) }}") 編集
-                        a.btn-sm.btn-primary.confirm(href="{{ url_for('timerules.destroy', id=item.id) }}") 削除
+                        if item.userid != 'admin'
+                            a.btn-sm.btn-primary.confirm(href="{{ url_for('users.destroy', id=item.id) }}") 削除
     script.
         $(function(){
             $(".confirm").on('click',function(){
