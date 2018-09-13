@@ -30,7 +30,7 @@ html(lang="ja")
                             ul.dropdown-menu(role="menu")
                                 li: a(href="{{ url_for('persons.index') }}") 利用者登録
                                 li: a(href="{{ url_for('recipients.index') }}") 受給者証登録
-                                li: a(href="#") アイテム２３
+                                li: a(href="{{ url_for('staffs.index') }}") 職員登録
                                 li: a(href="#") アイテム２４
                     ul.nav.navbar-nav.navbar-right
                         block menu
