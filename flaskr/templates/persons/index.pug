@@ -19,9 +19,10 @@ block content
                     td= '○' if item.enabled else ''
                     td= item.display_or_name
                     td= item.idm
-                    td
+                    td= item.timerule.caption if item.timerule else ''
                     td= item.create_at.strftime('%Y/%m/%d %H:%M') if item.create_at else ''
                     td= item.update_at.strftime('%Y/%m/%d %H:%M') if item.update_at else ''
                     td: .text-right: .btn-group
                         a.btn-sm.btn-primary(href="{{ url_for('persons.edit', id=item.id) }}") 編集
                         a.btn-sm.btn-primary(href="{{ url_for('persons.destroy', id=item.id) }}") 削除
+ 

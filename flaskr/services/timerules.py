@@ -17,6 +17,6 @@ class TimeRuleService(TimeRule):
             abort(404)
         return result
     @classmethod
-    def get_all_enabled(cls):
-        return cls.query.filter(cls.enabled == True).all()
+    def get_all(cls):
+        return cls.query.order_by(cls.caption).all()
 

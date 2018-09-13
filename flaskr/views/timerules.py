@@ -8,7 +8,7 @@ bp = Blueprint('timerules', __name__, url_prefix='/timerules')
 @bp.route('/')
 def index():
     items = TimeRuleService.get_all()
-    return render_template('timerules/index.pug')
+    return render_template('timerules/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create():
@@ -16,7 +16,7 @@ def create():
     if form.validate_on_submit():
         timerule = TimeRuleService()
         try:
-            timerule.insert(form)
+            timerule.update(form)
             flash('タイムテーブルの登録ができました', 'success')
             return redirect(url_for('timerules.index'))
         except ValueError as e:
@@ -29,8 +29,8 @@ def create():
             print(format_exc)
     return render_template('timerules/edit.pug', form=form)
 
-@bp.route('/edit', methods=['GET', 'POST'])
-def edit():
+@bp.route('/<id>/edit', methods=['GET', 'POST'])
+def edit(id):
     timerule = TimeRuleService.get_or_404(id)
     form = TimeRuleForm(obj=timerule)
     if form.validate_on_submit():

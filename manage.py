@@ -9,5 +9,8 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
+from commands.application import ApplicationCommand
+manager.add_command('app', ApplicationCommand)
+
 if __name__ == '__main__':
     manager.run()

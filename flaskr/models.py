@@ -1,5 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
+from werkzeug import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from flaskr import db
 import pymysql
