@@ -28,15 +28,23 @@ class Person(db.Model):
     timerule_id = db.Column(db.String(36), db.ForeignKey('timerules.id')) # タイムテーブル
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<Person: id={0.id}, name="{0.name}">'.format(self)
     @property
     def display_or_name(self):
         return self.display if bool(self.display) else self.name
     @property
     def recipient(self):
-        return Recipient.query.filter(Recipient.person_id == self.id).first()
+        if hasattr(self, '__recipient'):
+            return self.__recipient
+        self.__recipient = Recipient.query.filter(Recipient.person_id == self.id).first()
+        return self.__recipient
     @property
     def timerule(self):
-        return TimeRule.query.filter(TimeRule.id == self.timerule_id).first()
+        if hasattr(self, '__timerule'):
+            return self.__timerule
+        self.__timerule = TimeRule.query.filter(TimeRule.id == self.timerule_id).first()
+        return self.__timerule
 
 # 受給者証テーブル
 class Recipient(db.Model):
@@ -56,9 +64,14 @@ class Recipient(db.Model):
     apply_out = db.Column(db.Date, nullable=True)       # 適用決定終了日
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<Recipient: id={id}, name="{name}">'.format(id=self.person_id, name=self.person.name)
     @property
     def person(self):
-        return Person.query.get(self.person_id)
+        if hasattr(self, '__person'):
+            return self.__person
+        self.__person = Person.query.get(self.person_id)
+        return self.__person
 
 # 実績記録表
 class PerformLog(db.Model):
@@ -147,6 +160,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(128))
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<User: id={0.id}, userid={0.userid}>'.format(self)
     def set_password(self, password):
         if password:
             password = password.strip()
@@ -169,6 +184,8 @@ class TimeRule(db.Model):
     rules = db.Column(db.Text)                          # ルール(JSON)
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<Option: id={0.id}, caption={0.caption}>'.format(self)
 
 # オプション
 class Option(db.Model):
@@ -182,3 +199,5 @@ class Option(db.Model):
     value = db.Column(db.String(512), nullable=False)
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<Option: id={0.id}, name={0.name}, value={0.value}>'.format(self)

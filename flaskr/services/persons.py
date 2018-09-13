@@ -5,9 +5,10 @@ from flaskr.models import Person, Recipient
 class PersonService(Person):
     def insert(self, form):
         self.update(form)
-        recipient = Recipient(person_id=self.id)
-        db.session.add(recipient)
-        db.session.commit()
+        if not self.staff:
+            recipient = Recipient(person_id=self.id)
+            db.session.add(recipient)
+            db.session.commit()
     def update(self, form):
         form.populate_obj(self)
         if not bool(self.display):
@@ -35,13 +36,10 @@ class PersonService(Person):
         return cls.query.filter(cls.idm == idm).first()
     @classmethod
     def get_all_enabled(cls):
-        return cls.query.filter(cls.enabled == True).all()
+        return cls.query.filter(cls.enabled == True).order_by(cls.staff, cls.name).all()
     @classmethod
     def get_all_staff(cls):
-        return cls.query.filter(cls.staff == True).all()
+        return cls.query.filter(cls.staff == True).order_by(cls.name).all()
     @classmethod
     def get_all_no_staff(cls):
-        return cls.query.filter(cls.staff != True).all()
-    @classmethod
-    def get_all_no_staff_enabled(cls):
-        return cls.query.filter(cls.enabled == True, cls.staff != True).all()
+        return cls.query.filter(cls.staff != True).order_by(cls.name).all()

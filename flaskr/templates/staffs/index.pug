@@ -1,7 +1,7 @@
 extends staffs/layout.pug
 
 block title
-  | 利用者一覧 - ペタペタシステム
+  | 職員一覧 - ペタペタシステム
 block content
     table.table.table-hover
         thead
@@ -19,7 +19,7 @@ block content
                     td= '○' if item.enabled else ''
                     td= item.display_or_name
                     td= item.idm
-                    td
+                    td= item.timerule.caption if item.timerule else ''
                     td= item.create_at.strftime('%Y/%m/%d %H:%M') if item.create_at else ''
                     td= item.update_at.strftime('%Y/%m/%d %H:%M') if item.update_at else ''
                     td: .text-right: .btn-group
