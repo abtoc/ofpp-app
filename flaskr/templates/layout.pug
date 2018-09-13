@@ -43,4 +43,3 @@ html(lang="ja")
             for category, message in get_flashed_messages(with_categories=true)
                 div(class="alert alert-{{ category }}",role="alert")= message
             block content
-        script(src="{{ url_for('static', filename='js/confirm.min.js') }}")
