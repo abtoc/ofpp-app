@@ -2,6 +2,8 @@ from datetime import datetime
 from uuid import uuid4
 from flask_login import UserMixin
 from flaskr import db
+import pymysql
+pymysql.install_as_MySQLdb
 
 def _get_now():
     return datetime.now()
@@ -28,6 +30,9 @@ class Person(db.Model):
     @property
     def display_or_name(self):
         return self.display if bool(self.display) else self.name
+    @property
+    def recipient(self):
+        return Recipient.query.filter(Recipient.person_id == self.id).first()
 
 # 受給者証テーブル
 class Recipient(db.Model):
@@ -47,6 +52,9 @@ class Recipient(db.Model):
     apply_out = db.Column(db.Date, nullable=True)       # 適用決定終了日
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @property
+    def person(self):
+        return Person.query.get(self.person_id)
 
 # 実績記録表
 class PerformLog(db.Model):

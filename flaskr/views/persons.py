@@ -15,14 +15,9 @@ def index():
 def create():
     form = PersonForm()
     if form.validate_on_submit():
-        person = PersonService()
-        person.populate_form(form)
+        person = PersonService(staff=False)
         try:
-            person.validate()
-            person.staff = False
-            person.recipient = Recipient()
-            db.session.add(person)
-            db.session.commit()
+            person.insert(form)
             flash('利用者の登録ができました', 'success')
             return redirect(url_for('persons.index'))
         except ValueError as e:
@@ -40,11 +35,8 @@ def edit(id):
     person = PersonService.get_or_404(id)
     form = PersonForm(obj=person)
     if form.validate_on_submit():
-        person.populate_form(form)
         try:
-            person.validate()
-            db.session.add(person)
-            db.session.commit()
+            person.update(form)
             flash('利用者の変更ができました', 'success')
             return redirect(url_for('persons.index'))
         except ValueError as e:
@@ -60,9 +52,8 @@ def edit(id):
 @bp.route('/<id>/destroy')
 def destroy(id):
     person = PersonService.get_or_404(id)
-    db.session.delete(person)
     try:
-        db.session.commit()
+        person.delete()
         flash('利用者の削除ができました', 'success')
     except Exception as e:
         db.session.rollback()

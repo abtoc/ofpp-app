@@ -1,0 +1,17 @@
+include _form.pug
+extends persons/layout.pug
+
+block title
+    | 受給者証編集
+block content
+    form(method="POST")
+        .form-group
+            label ID
+            .form-control= item.person_id
+        .form-group
+            label 名前
+            .form-control= item.person.display_or_name
+        +generate_fields(form)
+        .btn-group
+            input.btn.btn-success(type="submit" value="保存")
+            a.btn.btn-danger(href="{{ url_for('recipients.index') }}") キャンセル

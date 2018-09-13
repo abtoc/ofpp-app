@@ -26,10 +26,10 @@ html(lang="ja")
                             ul.dropdown-menu(role="menu")
                                 li: a(href="#") アイテム１１
                         li.dropdown
-                            a.dropdown-toggle(data-toggle="dropdown",role="button") メニュー２
+                            a.dropdown-toggle(data-toggle="dropdown",role="button") マスター登録
                             ul.dropdown-menu(role="menu")
-                                li: a(href="#") アイテム２１
-                                li: a(href="#") アイテム２２
+                                li: a(href="{{ url_for('persons.index') }}") 利用者登録
+                                li: a(href="{{ url_for('recipients.index') }}") 受給者証登録
                                 li: a(href="#") アイテム２３
                                 li: a(href="#") アイテム２４
                     ul.nav.navbar-nav.navbar-right

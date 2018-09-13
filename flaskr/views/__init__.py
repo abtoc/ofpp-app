@@ -7,3 +7,5 @@ def index():
 
 from flaskr.views.persons import bp
 app.register_blueprint(persons.bp)
+from flaskr.views.recipients import bp
+app.register_blueprint(recipients.bp)
