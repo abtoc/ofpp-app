@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from uuid import uuid4
 from werkzeug import check_password_hash, generate_password_hash
 from flask_login import UserMixin
@@ -102,6 +102,17 @@ class PerformLog(db.Model):
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @property
+    def date(self):
+        yy = int(self.yymm[:4])
+        mm = int(self.yymm[4:])
+        return date(yy, mm, self.dd)
+    @property
+    def person(self):
+        if hasattr(self, '__person'):
+            return self.__person
+        self.__person = Person.query.get(self.person_id)
+        return self.__person
 
 # 欠席時対応加算記録
 class AbsenceLog(db.Model):
@@ -125,6 +136,17 @@ class AbsenceLog(db.Model):
     remarks = db.Column(db.String(128))              # 相談援助
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @property
+    def date(self):
+        yy = int(self.yymm[:4])
+        mm = int(self.yymm[4:])
+        return date(yy, mm, self.dd)
+    @property
+    def person(self):
+        if hasattr(self, '__person'):
+            return self.__person
+        self.__person = Person.query.get(self.person_id)
+        return self.__person
 
 # 勤怠記録表
 class WorkLog(db.Model):
@@ -150,6 +172,17 @@ class WorkLog(db.Model):
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @property
+    def date(self):
+        yy = int(self.yymm[:4])
+        mm = int(self.yymm[4:])
+        return date(yy, mm, self.dd)
+    @property
+    def person(self):
+        if hasattr(self, '__person'):
+            return self.__person
+        self.__person = Person.query.get(self.person_id)
+        return self.__person
 
 # ユーザ
 class User(db.Model, UserMixin):
