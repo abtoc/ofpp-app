@@ -36,6 +36,7 @@ html(lang="ja")
                             a.dropdown-toggle(data-toggle="dropdown",role="button") 設定
                             ul.dropdown-menu(role="menu")
                                 li: a(href="{{ url_for('timerules.index') }}") タイムテーブル設定
+                                li: a(href="{{ url_for('options.index') }}") 各種設定
                     ul.nav.navbar-nav.navbar-right
                         block menu
                         li: a(href="#") コマンド

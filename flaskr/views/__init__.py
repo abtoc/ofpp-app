@@ -15,3 +15,5 @@ from flaskr.views.timerules import bp
 app.register_blueprint(timerules.bp)
 from flaskr.views.users import bp
 app.register_blueprint(users.bp)
+from flaskr.views.options import bp
+app.register_blueprint(options.bp)
