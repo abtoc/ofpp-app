@@ -1,5 +1,6 @@
+from flask import url_for, abort
 from flaskr import db
-from flaskr.models import WorkLog
+from flaskr.models import WorkLog, PerformLog
 from flaskr.services.performlogs import PerformLogService
 
 class WorkLogService(WorkLog):
@@ -26,6 +27,8 @@ class WorkLogService(WorkLog):
         else:
             self.presented = False
         db.session.add(self)
+        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+        performlog.sync_worklog(self)
         db.session.commit()
     def update_api(self, tm):
         hhmm = tm.strftime('%H:%M')
@@ -37,11 +40,11 @@ class WorkLogService(WorkLog):
         self.presented = True
         self.absence = False
         db.session.add(self)
+        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+        performlog.update_worklog(self)
         db.session.commit()
         # update_worklog_value.delay(self.person_id, self.yymm, self.dd)
-        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
-        performlog.updte_worklog(self)
-    def update_performlog(performlog):
+    def update_performlog(self, performlog):
         self.work_in = performlog.work_in
         self.work_out = performlog.work_out
         self.absence = performlog.absence
@@ -51,20 +54,29 @@ class WorkLogService(WorkLog):
         # update_worklog_value.delay(self.person_id, self.yymm, self.dd)
     def delete(self):
         if not self.person.staff:
-            raise ValueError('利用者は実績登録から削除してください')
+            raise ValueError('利用者の勤怠削除は実績登録から削除してください')
         db.session.delete(self)
         db.session.commit()
-    @classmethod
-    def get(cls, id, yymm, dd):
-        return cls.query.filter(cls.person_id==id, cls.yymm==yymm, cls.dd==dd).first()
+    @property
+    def url_edit(self):
+        return url_for('worklogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
+    @property
+    def url_delete(self):
+        return url_for('worklogs.destory', id=self.person_id, yymm=self.yymm, dd=self.dd)
     @classmethod
     def get_or_new(cls, id, yymm, dd):
-        result = cls.get(id, yymm, dd)
+        result = cls.query.get((id, yymm, dd))
         if result is None:
             result = cls(person_id=id, yymm=yymm, dd=dd)
+        return result
+    @classmethod
+    def get_or_404(cls, id, yymm, dd):
+        result = cls.query.get((id, yymm, dd))
+        if result is None:
+            abort(404)
         return result
     @classmethod
     def get_date(cls, id, d):
         yymm = d.strftime('%Y%m')
         dd = d.day
-        return get(id, yymm, dd)
+        return cls.query.get((id, yymm, dd))

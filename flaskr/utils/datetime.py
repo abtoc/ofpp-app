@@ -8,7 +8,7 @@ class date_x:
     def __sub__(self, obj):
         return date_x(self.__date - obj)
     def to_yymm_dd(self):
-        return self.__date.strftime('%Y%m'), self.__date.strftime('%d')
+        return self.__date.strftime('%Y%m'), __date.day
     @property
     def date(self):
         return self.__date

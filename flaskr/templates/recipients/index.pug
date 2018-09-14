@@ -27,4 +27,4 @@ block content
                     td= item.create_at | strftime('%Y/%m/%d %H:%M')
                     td= item.update_at | strftime('%Y/%m/%d %H:%M') 
                     td: .text-right: .btn-group
-                        a.btn-sm.btn-primary(href="{{ url_for('recipients.edit', id=item.person_id) }}") 編集
+                        a.btn-sm.btn-default(href="{{ url_for('recipients.edit', id=item.person_id) }}") 編集

@@ -23,8 +23,8 @@ block content
                     td= item.create_at | strftime('%Y/%m/%d %H:%M')
                     td= item.update_at | strftime('%Y/%m/%d %H:%M')
                     td: .text-right: .btn-group
-                        a.btn-sm.btn-primary(href="{{ url_for('persons.edit', id=item.id) }}") 編集
-                        a.btn-sm.btn-primary.confirm(href="{{ url_for('persons.destroy', id=item.id) }}") 削除
+                        a.btn-sm.btn-default(href="{{ url_for('persons.edit', id=item.id) }}") 編集
+                        a.btn-sm.btn-default.confirm(href="{{ url_for('persons.destroy', id=item.id) }}") 削除
      script.
         $(function(){
             $(".confirm").on('click',function(){

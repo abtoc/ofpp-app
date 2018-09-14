@@ -7,5 +7,5 @@ block content
     form(method="POST")
         +generate_fields(form)
         .btn-group
-            input.btn.btn-success(type="submit" value="保存")
-            a.btn.btn-danger(href="{{ url_for('users.index') }}") キャンセル
+            input.btn.btn-default(type="submit" value="保存")
+            a.btn.btn-default(href="{{ url_for('users.index') }}") キャンセル

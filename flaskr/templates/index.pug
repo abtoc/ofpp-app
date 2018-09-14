@@ -3,4 +3,15 @@ extends layout.pug
 block title
     | ペタペタシステム
 block content
-    | Hello World!!
+    table.table.table-hover
+        tbody
+            for item in items
+                tr
+                    td= item.name
+                    td: .text-right
+                        if not item.staff:
+                            .row: .btn-group
+                                a.btn.btn-default(href="{{ item.url_performlogs }}") 実績記録
+                        .row: .btn-group
+                            a.btn.btn-default(href="{{ item.url_worklogs }}") 勤怠記録
+    

@@ -1,0 +1,54 @@
+extends worklogs/layout.pug
+
+block title
+  | 勤怠一覧 - ペタペタシステム
+block content
+    table.table.table-hover
+        thead
+            tr
+                th 日付
+                th 曜日
+                th 開始時刻
+                th 終了時刻
+                th 勤務時間
+                th 休憩時間
+                th 残業時間
+                th 欠勤
+                th 遅刻
+                th 早退
+                th 備考
+                th
+        tbody
+            for item in items
+                tr
+                    td
+                        | {{ item.dd }}
+                        if item.presented == None
+                            |
+                        elif item.presented
+                            | ○
+                        else
+                            | ×
+                    td= item.date | weeka
+                    td= item.work_in | do_not_show_none
+                    td= item.work_out | do_not_show_none
+                    td= item.value | do_not_show_none
+                    td= item.break_t | do_not_show_none
+                    td= item.over_t | do_not_show_none
+                    td= '○' if item.absence else ''
+                    td= '○' if item.late else ''
+                    td= '○' if item.leave else ''
+                    td= item.remarks | do_not_show_none
+                    td: .text-right: .hidden-print: .btn-group
+                        a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
+                        a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
+    script.
+        $(function(){
+            $(".confirm").on('click',function(){
+                if(window.confirm("データを削除してもよろしいですか？")){
+                    location.href = $(this).attr('href');
+                } else {
+                    return false;
+                }
+            });
+        });

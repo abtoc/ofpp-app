@@ -1,0 +1,71 @@
+extends performlogs/layout.pug
+
+block title
+  | 実績一覧 - ペタペタシステム
+block content
+    table.table.table-hover
+        thead
+            tr
+                th 日付
+                th 曜日
+                th 状態
+                th 開始時刻
+                th 終了時刻
+                th 送迎(往)
+                th 送迎(復)
+                th 訪問支援
+                th 食事
+                th 医療
+                th 体験
+                th 施設外就労
+                th 施設外支援
+                th 備考
+                th
+        tbody
+            for item in items
+                tr
+                    td
+                        | {{ item.dd }}
+                        if item.enabled == None
+                            |
+                        elif item.enabled
+                            | ○
+                        else
+                            | ×
+                        if item.presented == None
+                            |
+                        elif item.presented
+                            | ○
+                        else
+                            | ×
+                    td= item.date | weeka
+                    td
+                        if item.absence
+                            if item.absence_add
+                                | 欠席(加算)
+                            else
+                                | 欠席
+                    td= item.work_in | do_not_show_none
+                    td= item.work_out | do_not_show_none
+                    td= '○' if item.pickup_in else ''
+                    td= '○' if item.pickup_out else ''
+                    td= item.visit | do_not_show_none
+                    td= '○' if item.meal else ''
+                    td= item.medical | do_not_show_none
+                    th= item.experience | do_not_show_none
+                    th= '○' if item.outemp else ''
+                    th= '○' if item.outside else ''
+                    td= item.remarks | do_not_show_none
+                    td: .text-right: .hidden-print: .btn-group
+                        a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
+                        a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
+    script.
+        $(function(){
+            $(".confirm").on('click',function(){
+                if(window.confirm("データを削除してもよろしいですか？")){
+                    location.href = $(this).attr('href');
+                } else {
+                    return false;
+                }
+            });
+        });

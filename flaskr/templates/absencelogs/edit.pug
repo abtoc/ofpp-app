@@ -1,17 +1,17 @@
 include _form.pug
-extends recipients/layout.pug
+extends worklogs/layout.pug
 
 block title
-    | 受給者証編集
+    | 欠席時対応加算編集
 block content
     form(method="POST")
         .form-group
-            label ID
-            .form-control= item.person_id
+            label 日付
+            .form-control= item.date
         .form-group
             label 名前
             .form-control= item.person.display_or_name
         +generate_fields(form)
         .btn-group
             input.btn.btn-default(type="submit" value="保存")
-            a.btn.btn-default(href="{{ url_for('recipients.index') }}") キャンセル
+            a.btn.btn-default(href="{{ url_for('absencelogs.index', yymm=item.yymm) }}") キャンセル

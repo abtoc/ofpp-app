@@ -18,7 +18,7 @@ block content
                     td= item.update_at | strftime('%Y/%m/%d %H:%M')
                     td: .text-right: .btn-group
                         if item.userid != 'admin'
-                            a.btn-sm.btn-primary.confirm(href="{{ url_for('users.destroy', id=item.id) }}") 削除
+                            a.btn-sm.btn-default.confirm(href="{{ url_for('users.destroy', id=item.id) }}") 削除
     script.
         $(function(){
             $(".confirm").on('click',function(){

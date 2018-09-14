@@ -102,17 +102,24 @@ class PerformLog(db.Model):
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<PerformLog: id={0.person_id}, yymm={0.yymm}, dd={0.dd}, name={0.person.name}>'.format(self)
     @property
     def date(self):
         yy = int(self.yymm[:4])
         mm = int(self.yymm[4:])
-        return date(yy, mm, self.dd)
+        return date(yy, mm, int(self.dd))
     @property
     def person(self):
         if hasattr(self, '__person'):
             return self.__person
         self.__person = Person.query.get(self.person_id)
         return self.__person
+    @property
+    def absencelog(self):
+        if hasattr(self, '__absencelog'):
+            return self.__absencelog
+        self.__absencelog = AbsenceLog.query.get((self.person.id, self.yymm, self.dd))
 
 # 欠席時対応加算記録
 class AbsenceLog(db.Model):
@@ -128,7 +135,6 @@ class AbsenceLog(db.Model):
     person_id = db.Column(db.String(36))             # 利用者ID
     yymm = db.Column(db.String(8))                   # 年月
     dd = db.Column(db.Integer)                       # 日
-    enabled = db.Column(db.Boolean)                  # 月に４回以上であればFalse
     deleted = db.Column(db.Boolean)                  # 欠席加算のチェックオフになったらTrue
     contact = db.Column(db.Date)                     # 連絡日
     staff_id = db.Column(db.String(36))              # 対応職員
@@ -147,6 +153,17 @@ class AbsenceLog(db.Model):
             return self.__person
         self.__person = Person.query.get(self.person_id)
         return self.__person
+    @property
+    def staff(self):
+        if hasattr(self, '__staff'):
+            return self.__staff
+        self.__staff = Person.query.filter(Person.id == self.staff_id).first()
+        return self.__staff
+    @property
+    def date(self):
+        yy = int(self.yymm[:4])
+        mm = int(self.yymm[4:])
+        return date(yy, mm, int(self.dd))
 
 # 勤怠記録表
 class WorkLog(db.Model):
@@ -172,11 +189,13 @@ class WorkLog(db.Model):
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    def __repr__(self):
+        return '<WorkLog: id={0.person_id}, yymm={0.yymm}, dd={0.dd}, name={0.person.name}>'.format(self)
     @property
     def date(self):
         yy = int(self.yymm[:4])
         mm = int(self.yymm[4:])
-        return date(yy, mm, self.dd)
+        return date(yy, mm, int(self.dd))
     @property
     def person(self):
         if hasattr(self, '__person'):

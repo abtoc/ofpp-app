@@ -8,15 +8,9 @@ class TimeRuleService(TimeRule):
         db.session.add(self)
         db.session.commit()
     @classmethod
-    def get(cls, id):
-        return cls.query.filter(cls.id == id).first()
-    @classmethod
     def get_or_404(cls, id):
-        result = cls.get(id)
+        result = cls.query.get(id)
         if result is None:
             abort(404)
         return result
-    @classmethod
-    def get_all(cls):
-        return cls.query.order_by(cls.caption).all()
 

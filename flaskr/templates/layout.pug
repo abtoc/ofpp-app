@@ -22,9 +22,9 @@ html(lang="ja")
                     ul.nav.navbar-nav.navbar-left
                         //li: a(href="{{ url_for('index') }}") メニュー２
                         li.dropdown
-                            a.dropdown-toggle(data-toggle="dropdown",role="button") メニュー１
+                            a.dropdown-toggle(data-toggle="dropdown",role="button") 各種帳票
                             ul.dropdown-menu(role="menu")
-                                li: a(href="#") アイテム１１
+                                li: a(href="{{ url_for('absencelogs.default') }}")" 欠席時対応加算記録
                         li.dropdown
                             a.dropdown-toggle(data-toggle="dropdown",role="button") マスター登録
                             ul.dropdown-menu(role="menu")

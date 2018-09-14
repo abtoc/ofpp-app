@@ -1,13 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flaskr.forms.timerules import TimeRuleForm
 from flaskr.services.timerules import TimeRuleService
+from flaskr.models import TimeRule
 from flaskr import db
 
 bp = Blueprint('timerules', __name__, url_prefix='/timerules')
 
 @bp.route('/')
 def index():
-    items = TimeRuleService.get_all()
+    items = TimeRuleService.query.order_by(TimeRule.caption).all()
     return render_template('timerules/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])

@@ -1,0 +1,26 @@
+extends performlogs/layout.pug
+
+block title
+  | 実績一覧 - ペタペタシステム
+block content
+    table.table.table-hover
+        thead
+            tr
+                th 日付
+                th 欠席者
+                th 連絡日
+                th 対応職員
+                th 欠席理由
+                th 相談援助
+                th
+        tbody
+            for item in items
+                tr
+                    td= item.date
+                    td= item.person.display_or_name
+                    td= item.contact | do_not_show_none
+                    td= item.staff.name if item.staff else ''
+                    td= item.reason | do_not_show_none
+                    td= item.remarks | do_not_show_none
+                    td: .text-right
+                        a.btn-sm.btn-default(href="{{ url_for('absencelogs.edit', id=item.person_id, yymm=item.yymm, dd=item.dd) }}") 編集
