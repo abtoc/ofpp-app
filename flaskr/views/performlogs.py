@@ -17,6 +17,9 @@ bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 @login_required
 def index(id, yymm):
     person = PersonService.get_or_404(id)
+    if person.staff:
+        flash('職員はこの画面はサポートしておりません', 'danger')
+        return redirect(url_for('index'))
     today = date_x.yymm_dd(yymm, 1)
     first = today
     last = first + relativedelta(months=1)
@@ -47,6 +50,9 @@ def edit(id, yymm, dd):
     except:
         abort(400)
     person = PersonService.get_or_404(id)
+    if person.staff:
+        flash('職員はこの画面はサポートしておりません', 'danger')
+        return redirect(url_for('index'))
     performlog = PerformLogService.get_or_new(id, yymm, dd)
     if cache.get('person.idm') == person.idm:
         form = PerformLogFormIDM(obj=performlog)
@@ -74,6 +80,9 @@ def edit(id, yymm, dd):
 @login_required
 def destroy(id, yymm, dd):
     person = PersonService.get_or_404(id)
+    if person.staff:
+        flash('職員はこの画面はサポートしておりません', 'danger')
+        return redirect(url_for('index'))
     performlog = PerformLogService.get_or_404(id, yymm, dd)
     worklog = WorkLogService.get_or_404(id, yymm, dd)
     if (cache.get('person.idm') != person.idm):
