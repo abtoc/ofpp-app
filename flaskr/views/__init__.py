@@ -4,17 +4,54 @@ from flask import render_template, url_for
 from flaskr import app
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
+from flaskr.services.worklogs import WorkLogService
+
+def _get_caption(person, date):
+    worklog = WorkLogService.get_date(person.id, date)
+    yymm = date.strftime('%Y%m')
+    dd = date.day
+    if worklog is None:
+        caption = 'ー'
+    else:
+        if worklog.absence:
+            caption = '欠席'
+        else:
+            caption = '{}−{}'.format(
+                worklog.work_in if bool(worklog.work_in) else '',
+                worklog.work_out if bool(worklog.work_out) else ''
+            )
+    return caption
+
+def _get_url(person, date):
+    yymm = date.strftime('%Y%m')
+    dd = date.day
+    if person.staff:
+        url = url_for('worklogs.edit', id=person.id, yymm=yymm, dd=dd)
+    else:
+        url = url_for('performlogs.edit', id=person.id, yymm=yymm, dd=dd)
+    return url
 
 @app.route('/')
 def index():
     today = date_x()
     yesterday1 = today - relativedelta(days=1)
     yesterday2 = today - relativedelta(days=2)
+    prev = today - relativedelta(months=1)
     Item = namedtuple('Item', (
            'name',
            'staff',
+           'caption',
+           'url',
+           'caption1',
+           'url1',
+           'caption2',
+           'url2',
            'url_performlogs',
-           'url_worklogs'
+           'utl_performlogs_report',
+           'url_performlogs_report1',
+           'url_worklogs',
+           'url_worklogs_report',
+           'url_worklogs_report1'
         ))
     persons = Person.query.filter(Person.enabled==True).order_by(Person.staff, Person.name).all()
     items = []
@@ -22,8 +59,18 @@ def index():
         item = Item(
             person.display_or_name,
             person.staff,
+            _get_caption(person, today.date),
+            _get_url(person, today.date),
+            _get_caption(person, yesterday1.date),
+            _get_url(person, yesterday1.date),
+            _get_caption(person, yesterday2.date),
+            _get_url(person, yesterday2.date),
             url_for('performlogs.index', id=person.id, yymm=today.date.strftime('%Y%m')),
-            url_for('worklogs.index', id=person.id, yymm=today.date.strftime('%Y%m'))
+            url_for('performlogs.report', id=person.id, yymm=today.date.strftime('%Y%m')),
+            url_for('performlogs.report', id=person.id, yymm=prev.date.strftime('%Y%m')),
+            url_for('worklogs.index', id=person.id, yymm=today.date.strftime('%Y%m')),
+            url_for('worklogs.report', id=person.id, yymm=today.date.strftime('%Y%m')),
+            url_for('worklogs.report', id=person.id, yymm=prev.date.strftime('%Y%m')),
         )
         items.append(item)
     return render_template('index.pug', items=items)

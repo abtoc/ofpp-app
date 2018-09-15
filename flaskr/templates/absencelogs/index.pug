@@ -1,8 +1,19 @@
 extends absencelogs/layout.pug
 
 block title
-  | 実績一覧 - ペタペタシステム
+  | 欠席時対応加算記録 - ペタペタシステム
 block content
+    .row
+        .col-xs-2
+            b= today | strftime('%Y年%m月')
+        .col-xs-3
+            b 欠席時対応加算記録
+        .col-xs-5
+        .col-xs-2
+            nav(aria-label="ページャー")
+                ul.pager
+                    li: a(href="{{ url_for('absencelogs.index', yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('absencelogs.index', yymm=next) }}") >> 翌月
     table.table.table-hover
         thead
             tr

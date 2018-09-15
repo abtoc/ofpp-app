@@ -1,8 +1,23 @@
 extends performlogs/layout.pug
 
 block title
-  | 実績一覧 - ペタペタシステム
+  | 実績記録表 - ペタペタシステム
 block content
+    .row
+        .col-xs-2
+            b= today | strftime('%Y年%m月')
+        .col-xs-3
+            b 「 {{ name }} 」
+            b 実績記録表
+        .col-xs-5
+            a(href="{{ url_for('worklogs.index', id=id, yymm=yymm) }}") 勤怠記録
+            span &nbsp; &nbsp;
+            a(href="{{ url_for('absencelogs.index', yymm=yymm) }}") 欠席時対応記録
+        .col-xs-2
+            nav(aria-label="ページャー")
+                ul.pager
+                    li: a(href="{{ url_for('performlogs.index', id=id, yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('performlogs.index', id=id, yymm=next) }}") >> 翌月
     table.table.table-hover
         thead
             tr

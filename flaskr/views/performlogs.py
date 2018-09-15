@@ -29,6 +29,7 @@ def index(id, yymm):
         id = id,
         yymm = yymm,
         today = today.date,
+        name = person.display_or_name,
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
         items = items

@@ -28,6 +28,8 @@ def index(id, yymm):
     kw = dict(
         id = id,
         yymm = yymm,
+        staff = person.staff,
+        name = person.name,
         today = today.date,
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),

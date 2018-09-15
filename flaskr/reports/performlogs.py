@@ -34,7 +34,7 @@ class PerformLogReport(Report):
         head['usestart30d'] = ''
         if bool(self.person.recipient.usestart):
             self.usestart = self.person.recipient.usestart
-            self.usestart30d = self.usestart + relativedelta(days=30)
+            self.usestart30d = self.usestart + relativedelta(days=29)
             yy1 = self.usestart.year
             mm1 = self.usestart.month
             yy2 = self.usestart30d.year

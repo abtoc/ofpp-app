@@ -4,14 +4,28 @@ block title
     | ペタペタシステム
 block content
     table.table.table-hover
+        thead
+            tr
+                th 名前
+                th 今日
+                th 昨日
+                th 一昨日
+                th
         tbody
             for item in items
                 tr
                     td= item.name
+                    td: a(href="{{ item.url }}") {{ item.caption }}
+                    td: a(href="{{ item.url1 }}") {{ item.caption1 }}
+                    td: a(href="{{ item.url2 }}") {{ item.caption2 }}
                     td: .text-right
                         if not item.staff:
                             .row: .btn-group
                                 a.btn.btn-default(href="{{ item.url_performlogs }}") 実績記録
+                                a.btn.btn-default(href="{{ item.utl_performlogs_report }}" target="_blank") 当月実績記録票
+                                a.btn.btn-default(href="{{ item.url_performlogs_report1 }}" target="_blank") 前月実績記録票
                         .row: .btn-group
                             a.btn.btn-default(href="{{ item.url_worklogs }}") 勤怠記録
+                            a.btn.btn-default(href="{{ item.url_worklogs_report }}" target="_blank") 当月勤怠記録票
+                            a.btn.btn-default(href="{{ item.url_worklogs_report1 }}" target="_blank") 前月勤怠記録票
     
