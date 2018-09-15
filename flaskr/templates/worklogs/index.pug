@@ -16,7 +16,7 @@ block content
             nav(aria-label="ページャー")
                 ul.pager
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=prev) }}") << 前月
-                    li: a(href="{{ url_for('worklogs.index', id=id, yymm=next) }}") >> 翌月
+                    li: a(href="{{ url_for('worklogs.index', id=id, yymm=next) }}") 翌月 >>
     table.table.table-hover
         thead
             tr
