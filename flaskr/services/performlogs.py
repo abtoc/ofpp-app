@@ -43,10 +43,10 @@ class PerformLogService(PerformLog):
         self.enabled = self.__is_enabled(worklog)
         self.presented = self.__is_presented(worklog)
         db.session.add(self)
-        if bool(self.absencelog):
-            self.absencelog.deleted = not self.absence_add
-            db.session.add(self.absencelog)
-        elif self.absence_add:
+        absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
+        if bool(absencelog) and (not self.absence_add):
+            db.session.delete(absencelog)
+        elif (not bool(absencelog)) and self.absence_add:
             absencelog = AbsenceLog(person_id=self.person_id, yymm=self.yymm, dd=self.dd)
             db.session.add(absencelog)
         db.session.commit()
@@ -60,12 +60,9 @@ class PerformLogService(PerformLog):
         self.presented = self.__is_presented(worklog)
         self.enabled = self.__is_enabled(worklog)
         db.session.add(self)
-        if bool(self.absencelog):
-            self.absencelog.deleted = not self.absence_add
-            db.session.add(self.absencelog)
-        elif self.absence_add:
-            absencelog = AbsenceLogService(self.person_id, self.yymm, self.dd)
-            db.session.add(absencelog)
+        absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
+        if bool(absencelog):
+            db.session.delete(absencelog)
         #update_performlog_enabled.delay(self.person_id, self.yymm)
     def delete(self):
         if bool(self.absencelog):

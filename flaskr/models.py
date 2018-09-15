@@ -119,6 +119,7 @@ class PerformLog(db.Model):
     def absencelog(self):
         if hasattr(self, '__absencelog'):
             return self.__absencelog
+        print('aaaa')
         self.__absencelog = AbsenceLog.query.get((self.person.id, self.yymm, self.dd))
 
 # 欠席時対応加算記録
@@ -135,7 +136,6 @@ class AbsenceLog(db.Model):
     person_id = db.Column(db.String(36))             # 利用者ID
     yymm = db.Column(db.String(8))                   # 年月
     dd = db.Column(db.Integer)                       # 日
-    deleted = db.Column(db.Boolean)                  # 欠席加算のチェックオフになったらTrue
     contact = db.Column(db.Date)                     # 連絡日
     staff_id = db.Column(db.String(36))              # 対応職員
     reason = db.Column(db.String(128))               # 欠席理由

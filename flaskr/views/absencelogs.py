@@ -1,7 +1,9 @@
 from datetime import date
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, make_response
+from io import BytesIO
 from flaskr.services.absencelogs import AbsenceLogService
 from flaskr.forms.absencelogs import AbsenseLogForm
+from flaskr.reports.absencelogs import AbsenceLogReport
 from flaskr.models import AbsenceLog
 from flaskr import app, db
 
@@ -13,7 +15,12 @@ def default():
 
 @bp.route('/<yymm>')
 def index(yymm):
-    items = AbsenceLogService.query.filter(AbsenceLog.yymm==yymm).all()
+    items = AbsenceLogService.query.filter(
+        AbsenceLog.yymm==yymm
+    ).order_by(
+        AbsenceLog.yymm,
+        AbsenceLog.dd
+    ).all()
     return render_template('absencelogs/index.pug', yymm=yymm, items=items)
 
 @bp.route('/<id>/<yymm>/<dd>', methods=['GET', 'POST'])
@@ -30,3 +37,12 @@ def edit(id, yymm, dd):
             flash('欠席時対応加算記録更新時にエラーが発生しました {}'.format(e), 'danger')
             app.logger.exception(e)
     return render_template('absencelogs/edit.pug', item=absencelog, form=form)
+
+@bp.route('/<yymm>/report')
+def report(yymm):
+    with BytesIO() as output:
+        report = AbsenceLogReport(yymm)
+        report(output)
+        response = make_response(output.getvalue())
+        response.mimetype = 'application/pdf'
+    return response

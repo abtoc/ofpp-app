@@ -12,3 +12,4 @@ import flaskr.models
 import flaskr.helpers
 import flaskr.views
 import flaskr.apis
+import flaskr.reports
