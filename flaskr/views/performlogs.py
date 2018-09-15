@@ -1,11 +1,13 @@
 from dateutil.relativedelta import relativedelta
 from collections import namedtuple
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from io import BytesIO
+from flask import Blueprint, render_template, redirect, make_response, url_for, flash, abort
 from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogFormIDM
 from flaskr.services.performlogs import PerformLogService
 from flaskr.services.persons import PersonService
 from flaskr import app, db
 from flaskr.utils.datetime import date_x
+from flaskr.reports.performlogs import PerformLogReport
 
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
@@ -71,3 +73,12 @@ def destroy(id, yymm, dd):
         flash('実績削除時にエラーが出ました {}'.format(e), 'danger')
         app.logger.exception(e)
     return redirect(url_for('performlogs.index', id=id, yymm=yymm))
+
+@bp.route('/<id>/<yymm>/report')
+def report(id, yymm):
+    with BytesIO() as output:
+        report = PerformLogReport(id, yymm)
+        report(output)
+        response = make_response(output.getvalue())
+        response.mimetype = 'application/pdf'
+    return response

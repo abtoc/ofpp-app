@@ -17,3 +17,4 @@ class Report:
         pass
 
 from . import absencelogs
+from . import performlogs
