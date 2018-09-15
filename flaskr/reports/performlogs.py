@@ -11,7 +11,6 @@ from flaskr.helpers import weeka
 from flaskr.models import PerformLog, Recipient
 
 class PerformLogReport(Report):
-    MAX_ROW_COUNT=14
     def __init__(self, id, yymm):
         super().__init__()
         self.id = id

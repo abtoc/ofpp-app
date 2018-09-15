@@ -1,9 +1,11 @@
 from dateutil.relativedelta import relativedelta
 from collections import namedtuple
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from io import BytesIO
+from flask import Blueprint, render_template, redirect, url_for, flash, make_response, abort
 from flaskr.forms.worklogs import WorkLogForm, WorkLogFormStaff
 from flaskr.services.worklogs import WorkLogService
 from flaskr.services.persons import PersonService
+from flaskr.reports.worklogs import WorkLogReport
 from flaskr import app, db
 from flaskr.utils.datetime import date_x
 
@@ -80,3 +82,12 @@ def destory(id, yymm, dd):
         flash('勤怠削除時にエラーが発生しました {}'.format(e), 'danger')
         app.logger.exception(e)
     return redirect(url_for('worklogs.index', id=id, yymm=yymm))
+
+@bp.route('/<id>/<yymm>/report')
+def report(id, yymm):
+    with BytesIO() as output:
+        report = WorkLogReport(id, yymm)
+        report(output)
+        response = make_response(output.getvalue())
+        response.mimetype = 'application/pdf'
+    return response

@@ -18,3 +18,5 @@ class Report:
 
 from . import absencelogs
 from . import performlogs
+from . import worklogs
+
