@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, HiddenField, SelectField, ValidationError
 from wtforms.validators import Required
 from flaskr.models import Person
-from flaskr.services.timerules import TimeRuleService
+from flaskr.models import TimeRule
 
 class PersonForm(FlaskForm):
     enabled = BooleanField('有効化', default='checked')
@@ -15,11 +15,11 @@ class PersonForm(FlaskForm):
         super().__init__(*args, **kwargs)
         if 'obj' in kwargs:
             self.person_id.data = kwargs['obj'].id
-        self.timerule_id.choices = [(tr.id, tr.caption) for tr in TimeRuleService.get_all()]      
+        self.timerule_id.choices = [(tr.id, tr.caption) for tr in TimeRule.query.order_by(TimeRule.caption).all()]     
     def validate_idm(form, field):
         if len(field.data) == 0:
             return
-        check = Person.query.filter_by(idm == field.data, id != form.person_id.data).first()
+        check = Person.query.filter(Person.idm == field.data, id != form.person_id.data).first()
         if check:
             raise ValidationError('同一IDMが指定されいています')
     

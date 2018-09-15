@@ -237,7 +237,7 @@ class TimeRule(db.Model):
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
     def __repr__(self):
-        return '<Option: id={0.id}, caption={0.caption}>'.format(self)
+        return '<TimeRule: id={0.id}, caption={0.caption}>'.format(self)
 
 # オプション
 class Option(db.Model):

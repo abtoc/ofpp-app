@@ -33,15 +33,16 @@ class WorkLogService(WorkLog):
     def update_api(self, tm):
         hhmm = tm.strftime('%H:%M')
         if bool(self.work_in):
-            self.work_in = hhmm
-        else:
             self.work_out = hhmm
             self.value = None
+        else:
+            self.work_in = hhmm
         self.presented = True
         self.absence = False
         db.session.add(self)
-        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
-        performlog.update_worklog(self)
+        if not self.person.staff:
+            performlog = performlogs.PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+            performlog.sync_worklog(self)
         db.session.commit()
         # update_worklog_value.delay(self.person_id, self.yymm, self.dd)
     def update_performlog(self, performlog):
