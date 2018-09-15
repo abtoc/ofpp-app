@@ -69,6 +69,8 @@ class WorkLogService(WorkLog):
         return url_for('worklogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
     @property
     def url_delete(self):
+        if self.presented is None:
+           return url_for('worklogs.index', id=self.person_id, yymm=self.yymm)
         return url_for('worklogs.destory', id=self.person_id, yymm=self.yymm, dd=self.dd)
     @classmethod
     def get_or_new(cls, id, yymm, dd):

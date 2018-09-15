@@ -77,6 +77,8 @@ class PerformLogService(PerformLog):
         return url_for('performlogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
     @property
     def url_delete(self):
+        if self.enabled is None:
+            return url_for('performlogs.index', id=self.person_id, yymm=self.yymm)
         return url_for('performlogs.destroy', id=self.person_id, yymm=self.yymm, dd=self.dd)
     @classmethod
     def get_or_new(cls, id, yymm, dd):
