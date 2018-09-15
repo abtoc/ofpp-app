@@ -11,7 +11,7 @@ block content
         .col-xs-5
         .col-xs-2
             nav(aria-label="ページャー")
-                ul.pager
+                ul.pager.hidden-print
                     li: a(href="{{ url_for('absencelogs.index', yymm=prev) }}") << 前月
                     li: a(href="{{ url_for('absencelogs.index', yymm=next) }}") 翌月 >>
     table.table.table-hover
@@ -33,5 +33,5 @@ block content
                     td= item.staff.name if item.staff else ''
                     td= item.reason | do_not_show_none
                     td= item.remarks | do_not_show_none
-                    td: .text-right
+                    td: .hidden-print: .text-right
                         a.btn-sm.btn-default(href="{{ url_for('absencelogs.edit', id=item.person_id, yymm=item.yymm, dd=item.dd) }}") 編集

@@ -10,11 +10,12 @@ block content
             b 「 {{ name }} 」
             b 出勤簿
         .col-xs-5
-            if not staff
-                a(href="{{ url_for('performlogs.index', id=id, yymm=yymm) }}") 実績記録
+            .hidden-print
+                if not staff
+                    a(href="{{ url_for('performlogs.index', id=id, yymm=yymm) }}") 実績記録
         .col-xs-2
             nav(aria-label="ページャー")
-                ul.pager
+                ul.pager.hidden-print
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=prev) }}") << 前月
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=next) }}") 翌月 >>
     table.table.table-hover
@@ -53,7 +54,7 @@ block content
                     td= '○' if item.late else ''
                     td= '○' if item.leave else ''
                     td= item.remarks | do_not_show_none
-                    td: .text-right: .hidden-print: .btn-group
+                    td: .hidden-print: .text-right: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
                         a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
     script.
