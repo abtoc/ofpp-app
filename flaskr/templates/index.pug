@@ -15,6 +15,9 @@ block content
             for item in items
                 tr
                     td= item.name
+                        if item.idm:
+                            br
+                            small (unlock)
                     td: a(href="{{ item.url }}") {{ item.caption }}
                     td: a(href="{{ item.url1 }}") {{ item.caption1 }}
                     td: a(href="{{ item.url2 }}") {{ item.caption2 }}

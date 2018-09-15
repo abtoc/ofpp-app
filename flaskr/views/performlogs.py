@@ -3,10 +3,11 @@ from collections import namedtuple
 from io import BytesIO
 from flask import Blueprint, render_template, redirect, make_response, url_for, flash, abort
 from flask_login import login_required
-from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogFormIDM
+from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogForm
 from flaskr.services.performlogs import PerformLogService
 from flaskr.services.persons import PersonService
-from flaskr import app, db
+from flaskr.services.worklogs import WorkLogService
+from flaskr import app, db, cache
 from flaskr.utils.datetime import date_x
 from flaskr.reports.performlogs import PerformLogReport
 
@@ -47,7 +48,10 @@ def edit(id, yymm, dd):
         abort(400)
     person = PersonService.get_or_404(id)
     performlog = PerformLogService.get_or_new(id, yymm, dd)
-    form = PerformLogFormIDM(obj=performlog)
+    if cache.get('person.idm') == person.idm:
+        form = PerformLogFormIDM(obj=performlog)
+    else:
+        form = PerformLogForm(obj=performlog)
     if form.validate_on_submit():
         try:
             performlog.update(form)
@@ -69,7 +73,13 @@ def edit(id, yymm, dd):
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 @login_required
 def destroy(id, yymm, dd):
+    person = PersonService.get_or_404(id)
     performlog = PerformLogService.get_or_404(id, yymm, dd)
+    worklog = WorkLogService.get_or_404(id, yymm, dd)
+    if (cache.get('person.idm') != person.idm):
+        if bool(performlog.work_in) or bool(performlog.work_out) or bool(worklog.value):
+            flash('利用者のICカードをタッチしてください', 'danger')
+            return redirect(url_for('performlogs.index', id=id, yymm=yymm))
     try:
         performlog.delete()
         flash('実績の削除ができました', 'success')

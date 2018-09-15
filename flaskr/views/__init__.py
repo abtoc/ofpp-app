@@ -2,7 +2,7 @@ from collections import namedtuple
 from dateutil.relativedelta import relativedelta
 from flask import render_template, url_for
 from flask_login import login_required
-from flaskr import app
+from flaskr import app, cache
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
 from flaskr.services.worklogs import WorkLogService
@@ -41,6 +41,7 @@ def index():
     prev = today - relativedelta(months=1)
     Item = namedtuple('Item', (
            'name',
+           'idm',
            'staff',
            'caption',
            'url',
@@ -60,6 +61,7 @@ def index():
     for person in persons:
         item = Item(
             person.display_or_name,
+            person.id == cache.get('person.id'),
             person.staff,
             _get_caption(person, today.date),
             _get_url(person, today.date),

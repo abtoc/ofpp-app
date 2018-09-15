@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, request, render_template, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from flaskr import db, lm
+from flaskr import db, lm, cache
 from flaskr.models import User
 from flaskr.forms.auth import LoginForm, PasswordChangeForm
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -23,6 +23,9 @@ def login():
 
 @bp.route('/logout')
 def logout():
+    cache.set('person.id', None)
+    cache.set('person.idm', None)
+    cache.set('person.name', None)
     logout_user()
     return redirect(url_for('index'))
 

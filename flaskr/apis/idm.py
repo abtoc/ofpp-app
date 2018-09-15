@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify
 from flaskr.models import Person
 from flaskr.services.worklogs import WorkLogService
-from flaskr import app, db, auth
+from flaskr import app, db, auth, cache
 
 bp = Blueprint('api_idm', __name__, url_prefix='/api/idm')
 
@@ -12,6 +12,9 @@ def get(idm):
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
         return jsonify({ 'name': '該当者無し'}), 404
+    cache.set('person.id', person.id)
+    cache.set('person.idm', person.idm)
+    cache.set('person.name', person.display_or_name)
     result = dict(
         name=person.display_or_name
     )
@@ -20,6 +23,9 @@ def get(idm):
 @bp.route('/<idm>', methods=['POST'])
 @auth.login_required
 def post(idm):
+    cache.set('person.id', None)
+    cache.set('person.idm', None)
+    cache.set('person.name', None)
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
         return jsonify({ 'name': '該当者無し'}), 404
@@ -48,4 +54,7 @@ def post(idm):
 @bp.route('/<idm>', methods=['DELETE'])
 @auth.login_required
 def delete(idm):
+    cache.set('person.id', None)
+    cache.set('person.idm', None)
+    cache.set('person.name', None)
     return jsonify({}), 200
