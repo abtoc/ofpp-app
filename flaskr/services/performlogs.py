@@ -2,6 +2,7 @@ from flask import url_for, abort
 from flaskr import db
 from flaskr.models import PerformLog
 from flaskr.services import worklogs
+from flaskr.workers.performlogs import update_performlogs_enabled
 from flaskr.models import AbsenceLog, WorkLog
 
 class PerformLogService(PerformLog):
@@ -13,8 +14,8 @@ class PerformLogService(PerformLog):
         if worklog.value is not None:
             return True
         return False
-    def __is_enabled(self, worklog):
-        if self.__is_presented(worklog):
+    def __is_enabled(self):
+        if self.presented:
             return True
         if self.absence_add:
             return True
@@ -40,8 +41,8 @@ class PerformLogService(PerformLog):
         if not bool(self.remarks):
             self.remarks = None
         worklog = worklogs.WorkLogService.get_or_new(self.person_id, self.yymm, self.dd)
-        self.enabled = self.__is_enabled(worklog)
         self.presented = self.__is_presented(worklog)
+        self.enabled = self.__is_enabled()
         db.session.add(self)
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog) and (not self.absence_add):
@@ -50,20 +51,19 @@ class PerformLogService(PerformLog):
             absencelog = AbsenceLog(person_id=self.person_id, yymm=self.yymm, dd=self.dd)
             db.session.add(absencelog)
         db.session.commit()
-        # update_performlog_enabled.delay(self.person_id, self.yymm)
         worklog.update_performlog(self)
+        update_performlogs_enabled.delay(self.person_id, self.yymm)
     def sync_worklog(self, worklog):
         self.absence = False
         self.absence_add = False
         self.work_in = worklog.work_in
         self.work_out = worklog.work_out
         self.presented = self.__is_presented(worklog)
-        self.enabled = self.__is_enabled(worklog)
+        self.enabled = self.__is_enabled()
         db.session.add(self)
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog):
             db.session.delete(absencelog)
-        #update_performlog_enabled.delay(self.person_id, self.yymm)
     def delete(self):
         if bool(self.absencelog):
             db.session.delete(self.absencelog)
