@@ -33,6 +33,7 @@ class WorkLogService(WorkLog):
         performlog = performlogs.PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
         performlog.sync_worklog(self)
         db.session.commit()
+        update_worklogs_value.delay(self.person_id, self.yymm, self.dd)
         update_performlogs_enabled.delay(self.person_id, self.yymm)
     def update_api(self, tm):
         hhmm = tm.strftime('%H:%M')
