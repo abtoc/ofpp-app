@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask_login import login_required
 from flaskr import db
 from flaskr.models import User
 from flaskr.forms.users import UserNewForm
@@ -6,11 +7,13 @@ from flaskr.forms.users import UserNewForm
 bp = Blueprint('users', __name__, url_prefix="/users")
 
 @bp.route('/')
+@login_required
 def index():
     items = User.query.order_by(User.userid).all()
     return render_template('users/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
     form = UserNewForm()
     if form.validate_on_submit():
@@ -30,6 +33,7 @@ def create():
     return render_template('users/edit.pug', form=form)
 
 @bp.route('/<id>/destroy')
+@login_required
 def destroy(id):
     user = User.query.filter(User.id == id).first()
     if user is None:

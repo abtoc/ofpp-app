@@ -2,6 +2,7 @@ from dateutil.relativedelta import relativedelta
 from collections import namedtuple
 from io import BytesIO
 from flask import Blueprint, render_template, redirect, make_response, url_for, flash, abort
+from flask_login import login_required
 from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogFormIDM
 from flaskr.services.performlogs import PerformLogService
 from flaskr.services.persons import PersonService
@@ -12,6 +13,7 @@ from flaskr.reports.performlogs import PerformLogReport
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
 @bp.route('/<id>/<yymm>')
+@login_required
 def index(id, yymm):
     person = PersonService.get_or_404(id)
     today = date_x.yymm_dd(yymm, 1)
@@ -37,6 +39,7 @@ def index(id, yymm):
     return render_template('performlogs/index.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(id, yymm, dd):
     try:
         date_x.yymm_dd(yymm, dd)
@@ -64,6 +67,7 @@ def edit(id, yymm, dd):
     return render_template('performlogs/edit.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/destroy')
+@login_required
 def destroy(id, yymm, dd):
     performlog = PerformLogService.get_or_404(id, yymm, dd)
     try:
@@ -76,6 +80,7 @@ def destroy(id, yymm, dd):
     return redirect(url_for('performlogs.index', id=id, yymm=yymm))
 
 @bp.route('/<id>/<yymm>/report')
+@login_required
 def report(id, yymm):
     with BytesIO() as output:
         report = PerformLogReport(id, yymm)

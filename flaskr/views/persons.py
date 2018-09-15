@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask_login import login_required
 from flaskr.forms.persons import PersonForm
 from flaskr.services.persons import PersonService
 from flaskr import db
@@ -7,11 +8,13 @@ from flaskr.models import Recipient
 bp = Blueprint('persons', __name__, url_prefix='/persons')
 
 @bp.route('/')
+@login_required
 def index():
     items = PersonService.get_all_no_staff()
     return render_template('persons/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
     form = PersonForm()
     if form.validate_on_submit():
@@ -31,6 +34,7 @@ def create():
     return render_template('persons/edit.pug', form=form)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(id):
     person = PersonService.get_or_404(id)
     form = PersonForm(obj=person)
@@ -50,6 +54,7 @@ def edit(id):
     return render_template('persons/edit.pug', id=id, form=form)
 
 @bp.route('/<id>/destroy')
+@login_required
 def destroy(id):
     person = PersonService.get_or_404(id)
     try:

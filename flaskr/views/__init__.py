@@ -1,6 +1,7 @@
 from collections import namedtuple
 from dateutil.relativedelta import relativedelta
 from flask import render_template, url_for
+from flask_login import login_required
 from flaskr import app
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
@@ -32,6 +33,7 @@ def _get_url(person, date):
     return url
 
 @app.route('/')
+@login_required
 def index():
     today = date_x()
     yesterday1 = today - relativedelta(days=1)
@@ -93,3 +95,5 @@ from flaskr.views.performlogs import bp
 app.register_blueprint(performlogs.bp)
 from flaskr.views.absencelogs import bp
 app.register_blueprint(absencelogs.bp)
+from flaskr.views.auth import bp
+app.register_blueprint(auth.bp)

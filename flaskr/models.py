@@ -223,6 +223,12 @@ class User(db.Model, UserMixin):
         if not password:
             return False
         return check_password_hash(self.password, password)
+    @classmethod
+    def auth(cls, userid, password):
+        user = cls.query.filter(cls.userid==userid).first()
+        if user is None:
+            return None, False
+        return user, user.check_password(password)
 
 # 時間ルールテーブル
 class TimeRule(db.Model):

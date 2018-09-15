@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask_login import login_required
 from flaskr.forms.recipients import RecipientForm
 from flaskr.services.recipients import RecipientService
 from flaskr import db
@@ -6,11 +7,13 @@ from flaskr import db
 bp = Blueprint('recipients', __name__, url_prefix='/recipients')
 
 @bp.route('/')
+@login_required
 def index():
     items = RecipientService.query.all()
     return render_template('recipients/index.pug', items=items)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(id):
     recipient = RecipientService.get_or_404(id)
     form = RecipientForm(obj=recipient)

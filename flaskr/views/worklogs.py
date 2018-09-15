@@ -1,4 +1,5 @@
 from dateutil.relativedelta import relativedelta
+from flask_login import login_required
 from collections import namedtuple
 from io import BytesIO
 from flask import Blueprint, render_template, redirect, url_for, flash, make_response, abort
@@ -12,6 +13,7 @@ from flaskr.utils.datetime import date_x
 bp = Blueprint('worklogs', __name__, url_prefix="/worklogs")
 
 @bp.route('/<id>/<yymm>')
+@login_required
 def index(id, yymm):
     person = PersonService.get_or_404(id)
     today = date_x.yymm_dd(yymm, 1)
@@ -38,6 +40,7 @@ def index(id, yymm):
     return render_template('worklogs/index.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(id, yymm, dd):
     try:
         date_x.yymm_dd(yymm, dd)
@@ -71,6 +74,7 @@ def edit(id, yymm, dd):
     return render_template('worklogs/edit.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/destroy')
+@login_required
 def destory(id, yymm, dd):
     worklog = WorkLogService.get_or_404(id, yymm, dd)
     try:
@@ -86,6 +90,7 @@ def destory(id, yymm, dd):
     return redirect(url_for('worklogs.index', id=id, yymm=yymm))
 
 @bp.route('/<id>/<yymm>/report')
+@login_required
 def report(id, yymm):
     with BytesIO() as output:
         report = WorkLogReport(id, yymm)

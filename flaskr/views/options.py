@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required
 from flaskr.forms.options import OptionForm
 from flaskr.services.options import OptionService
 from flaskr import db
@@ -6,6 +7,7 @@ from flaskr import db
 bp = Blueprint('options', __name__, url_prefix='/options')
 
 @bp.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
     form = OptionForm()
     if form.validate_on_submit():

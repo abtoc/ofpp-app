@@ -2,6 +2,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, render_template, redirect, url_for, flash, make_response
 from io import BytesIO
+from flask_login import login_required
 from flaskr.services.absencelogs import AbsenceLogService
 from flaskr.forms.absencelogs import AbsenseLogForm
 from flaskr.reports.absencelogs import AbsenceLogReport
@@ -12,10 +13,12 @@ from flaskr.utils.datetime import date_x
 bp = Blueprint('absencelogs', __name__, url_prefix='/absencelogs')
 
 @bp.route('/')
+@login_required
 def default():
     return redirect(url_for('absencelogs.index', yymm=date.today().strftime('%Y%m')))
 
 @bp.route('/<yymm>')
+@login_required
 def index(yymm):
     items = AbsenceLogService.query.filter(
         AbsenceLog.yymm==yymm
@@ -37,6 +40,7 @@ def index(yymm):
     return render_template('absencelogs/index.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>', methods=['GET', 'POST'])
+@login_required
 def edit(id, yymm, dd):
     absencelog = AbsenceLogService.get_or_404(id, yymm, dd)
     form = AbsenseLogForm(obj=absencelog)
@@ -52,6 +56,7 @@ def edit(id, yymm, dd):
     return render_template('absencelogs/edit.pug', item=absencelog, form=form)
 
 @bp.route('/<yymm>/report')
+@login_required
 def report(yymm):
     with BytesIO() as output:
         report = AbsenceLogReport(yymm)

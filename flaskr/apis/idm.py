@@ -2,11 +2,12 @@ from datetime import datetime
 from flask import Blueprint, jsonify
 from flaskr.models import Person
 from flaskr.services.worklogs import WorkLogService
-from flaskr import app, db
+from flaskr import app, db, auth
 
 bp = Blueprint('api_idm', __name__, url_prefix='/api/idm')
 
 @bp.route('/<idm>', methods=['GET'])
+@auth.login_required
 def get(idm):
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
@@ -17,6 +18,7 @@ def get(idm):
     return jsonify(result), 200
 
 @bp.route('/<idm>', methods=['POST'])
+@auth.login_required
 def post(idm):
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
@@ -44,5 +46,6 @@ def post(idm):
     return jsonify(result), 200
 
 @bp.route('/<idm>', methods=['DELETE'])
+@auth.login_required
 def delete(idm):
     return jsonify({}), 200

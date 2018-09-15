@@ -37,9 +37,14 @@ html(lang="ja")
                             ul.dropdown-menu(role="menu")
                                 li: a(href="{{ url_for('timerules.index') }}") タイムテーブル設定
                                 li: a(href="{{ url_for('options.index') }}") 各種設定
+                                if current_user.is_authenticated
+                                    li: a(href="{{ url_for('auth.passwd') }}") パスワード変更
                     ul.nav.navbar-nav.navbar-right
                         block menu
-                        li: a(href="#") コマンド
+                        if current_user.is_authenticated
+                            li: a(href="{{ url_for('auth.logout') }}") ログアウト
+                        else
+                            li: a(href="{{ url_for('auth.login') }}") ログイン
         .container
             for category, message in get_flashed_messages(with_categories=true)
                 div(class="alert alert-{{ category }}",role="alert")= message
