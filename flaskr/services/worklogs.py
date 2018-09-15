@@ -1,7 +1,7 @@
 from flask import url_for, abort
 from flaskr import db
 from flaskr.models import WorkLog, PerformLog
-from flaskr.services.performlogs import PerformLogService
+from flaskr.services import performlogs
 
 class WorkLogService(WorkLog):
     def update_staff(self, form):
@@ -27,7 +27,7 @@ class WorkLogService(WorkLog):
         else:
             self.presented = False
         db.session.add(self)
-        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+        performlog = performlogs.PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
         performlog.sync_worklog(self)
         db.session.commit()
     def update_api(self, tm):
