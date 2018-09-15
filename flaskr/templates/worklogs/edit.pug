@@ -14,10 +14,10 @@ block content
         if not item.person.staff
             .form-group
                 label 開始時間
-                .form-control= item.work_in | do_not_show_none
+                .form-control.disabled= item.work_in | do_not_show_none
             .form-group
                 label 終了時間
-                .form-control= item.work_out | do_not_show_none
+                .form-control.disabled= item.work_out | do_not_show_none
         +generate_fields(form)
         .btn-group
             input.btn.btn-default(type="submit" value="保存")
