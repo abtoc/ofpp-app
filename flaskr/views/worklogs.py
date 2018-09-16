@@ -108,8 +108,8 @@ def destory(id, yymm, dd):
 @login_required
 def report(id, yymm):
     with BytesIO() as output:
-        report = WorkLogReport(id, yymm)
-        report(output)
+        pdf = WorkLogReport(id, yymm)
+        pdf(output)
         response = make_response(output.getvalue())
         response.mimetype = 'application/pdf'
     return response

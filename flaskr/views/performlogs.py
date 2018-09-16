@@ -118,8 +118,8 @@ def destroy(id, yymm, dd):
 @login_required
 def report(id, yymm):
     with BytesIO() as output:
-        report = PerformLogReport(id, yymm)
-        report(output)
+        pdf = PerformLogReport(id, yymm)
+        pdf(output)
         response = make_response(output.getvalue())
         response.mimetype = 'application/pdf'
     return response
