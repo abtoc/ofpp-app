@@ -59,7 +59,7 @@ def index(id, yymm):
 def edit(id, yymm, dd):
     try:
         date_x.yymm_dd(yymm, dd)
-    except:
+    except ValueError:
         abort(400)
     person = Person.get_or_404(id)
     worklog = WorkLogService.get_or_new(id, yymm, dd)

@@ -63,7 +63,7 @@ def index(id, yymm):
 def edit(id, yymm, dd):
     try:
         date_x.yymm_dd(yymm, dd)
-    except:
+    except ValueError:
         abort(400)
     person = Person.get_or_404(id)
     if person.staff:
