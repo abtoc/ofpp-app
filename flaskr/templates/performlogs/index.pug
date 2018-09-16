@@ -76,6 +76,29 @@ block content
                     td: .hidden-print: .text-right: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
                         a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
+        tfoot
+            tr
+                td.text-center(colspan="3") 合計
+                td.text-center(colspan="2")= foot.presented
+                td.text-center(colspan="2")= foot.pickup
+                td.text-center= foot.visit
+                td.text-center= foot.meal
+                td.text-center= foot.medical
+                td.text-center= foot.experience
+                td.text-center= foot.outemp
+                td.text-center= foot.outside
+                td(colspan="2")
+            tr
+                th(colspan="3")
+                th(colspan="2").text-center 利用回数
+                th(colspan="2").text-center 送迎
+                th.text-center 訪問支援
+                th.text-center 食事
+                th.text-center 医療
+                th.text-center 体験
+                th.text-center 施設外就労
+                th.text-center 施設外支援
+                th(colspan="2")
     script.
         $(function(){
             $(".confirm").on('click',function(){

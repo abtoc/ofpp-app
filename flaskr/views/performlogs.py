@@ -32,6 +32,18 @@ def index(id, yymm):
         performlog = PerformLogService.get_or_new(id, ym, d)
         items.append(performlog)
         first += relativedelta(days=1)
+    Foot = namedtuple('Foot', ('presented', 'pickup', 'visit', 'meal', 'medical', 'experience', 'outemp', 'outside'))
+    foot = Foot(
+        len([i for i in items if i.presented]),
+        len([i for i in items if i.pickup_in]) +
+        len([i for i in items if i.pickup_out]),
+        len([i for i in items if bool(i.visit) and i.visit > 0]),
+        len([i for i in items if i.meal]),
+        len([i for i in items if bool(i.medical) and i.medical > 0]),
+        len([i for i in items if bool(i.experience) and i.experience > 0]),
+        len([i for i in items if i.outemp]),
+        len([i for i in items if i.outside]),
+    )
     kw = dict(
         id = id,
         yymm = yymm,
@@ -40,7 +52,8 @@ def index(id, yymm):
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
         this = this.date.strftime('%Y%m'),
-        items = items
+        items = items,
+        foot = foot
     )
     return render_template('performlogs/index.pug', **kw)
 
