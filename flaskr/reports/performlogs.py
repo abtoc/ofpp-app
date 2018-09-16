@@ -4,17 +4,15 @@ from reportlab.lib.pagesizes import A4, portrait
 from reportlab.lib.units import mm
 from reportlab.platypus import Table
 from flaskr.reports import Report
-from flaskr.services.persons import PersonService
-from flaskr.services.options import OptionService
 from flaskr.services.performlogs import PerformLogService
 from flaskr.helpers import weeka
-from flaskr.models import PerformLog, Recipient
+from flaskr.models import Person, PerformLog, Recipient, Option
 
 class PerformLogReport(Report):
     def __init__(self, id, yymm):
         super().__init__()
         self.id = id
-        self.person = PersonService.query.get(id)
+        self.person = Person.query.get(id)
         self.recipient = Recipient.query.get(id)
         self.yymm = yymm
         self.yy = int(yymm[:4])
@@ -121,8 +119,8 @@ class PerformLogReport(Report):
         # Header
         colw = (25.0*mm, 29.5*mm, 32.0*mm, 32.0*mm, 22.0*mm, 43.5*mm)
         idm = head['idm']
-        number = OptionService.get('office_number','')
-        name = OptionService.get('office_name',  '')
+        number = Option.get('office_number','')
+        name = Option.get('office_name',  '')
         data =[
             ['受給者証番号',head['number'],'支給決定障害者氏名',head['name'],'事業所番号',number],
             ['契約支給量',head['amount'],'','','事業者及び\nその事業所',name]

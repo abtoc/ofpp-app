@@ -6,7 +6,7 @@ from flaskr.workers.performlogs import update_performlogs_enabled
 from flaskr.models import AbsenceLog, WorkLog
 
 class PerformLogService(PerformLog):
-    def __is_presented(self, worklog):
+    def is_presented(self, worklog):
         if bool(self.work_in):
             return True
         if bool(self.work_out):
@@ -14,7 +14,7 @@ class PerformLogService(PerformLog):
         if worklog.value is not None:
             return True
         return False
-    def __is_enabled(self):
+    def is_enabled(self):
         if self.presented:
             return True
         if self.absence_add:
@@ -34,15 +34,9 @@ class PerformLogService(PerformLog):
         return False        
     def update(self, form):
         form.populate_obj(self)
-        if not bool(self.work_in):
-            self.work_in = None
-        if not bool(self.work_out):
-            self.work_out = None
-        if not bool(self.remarks):
-            self.remarks = None
         worklog = worklogs.WorkLogService.get_or_new(self.person_id, self.yymm, self.dd)
-        self.presented = self.__is_presented(worklog)
-        self.enabled = self.__is_enabled()
+        self.presented = self.is_presented(worklog)
+        self.enabled = self.is_enabled()
         db.session.add(self)
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog) and (not self.absence_add):
@@ -58,8 +52,8 @@ class PerformLogService(PerformLog):
         self.absence_add = False
         self.work_in = worklog.work_in
         self.work_out = worklog.work_out
-        self.presented = self.__is_presented(worklog)
-        self.enabled = self.__is_enabled()
+        self.presented = self.is_presented(worklog)
+        self.enabled = self.is_enabled()
         db.session.add(self)
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog):

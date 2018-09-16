@@ -8,12 +8,6 @@ from flaskr.workers.performlogs import update_performlogs_enabled
 class WorkLogService(WorkLog):
     def update_staff(self, form):
         form.populate_obj(self)
-        if not bool(self.work_in):
-            self.work_in = None
-        if not bool(self.work_out):
-            self.work_out = None
-        if not bool(self.remarks):
-            self.remarks = None
         if self.value is not None:
             self.presented = True
         else:
@@ -23,8 +17,6 @@ class WorkLogService(WorkLog):
         update_worklogs_value.delay(self.person_id, self.yymm, self.dd)
     def update_no_staff(self, form):
         form.populate_obj(self)
-        if not bool(self.remarks):
-            self.remarks = None
         if self.value is not None:
             self.presented = True
         else:

@@ -5,16 +5,15 @@ from reportlab.lib.pagesizes import A4, portrait
 from reportlab.lib.units import mm
 from reportlab.platypus import Table
 from flaskr.reports import Report
-from flaskr.services.persons import PersonService
 from flaskr.services.worklogs import WorkLogService
-from flaskr.services.options import OptionService
 from flaskr.helpers import weeka
+from flaskr.models import Person, Option
 
 class WorkLogReport(Report):
     def __init__(self, id, yymm):
         super().__init__()
         self.id = id
-        self.person = PersonService.query.get(id)
+        self.person = Person.query.get(id)
         self.yymm = yymm
         self.yy = int(yymm[:4])
         self.mm = int(yymm[4:])
@@ -82,7 +81,7 @@ class WorkLogReport(Report):
     def make_page(self, p, head, items, foot):
         xmargin = 15.0 * mm
         # Title
-        name = OptionService.get('office_name',  '')
+        name = Option.get('office_name',  '')
         colw = (45.5*mm, 20.5*mm, 24.5*mm, 22.5*mm, 30.5*mm, 27.5*mm)
         data = [[head['ym'],'出勤簿','氏名:',head['name'],'所属：',name]]
         table = Table(data, colWidths=colw, rowHeights=8.0*mm)

@@ -6,9 +6,9 @@ from io import BytesIO
 from flask import Blueprint, render_template, redirect, url_for, flash, make_response, abort
 from flaskr.forms.worklogs import WorkLogForm, WorkLogFormStaff
 from flaskr.services.worklogs import WorkLogService
-from flaskr.services.persons import PersonService
 from flaskr.reports.worklogs import WorkLogReport
 from flaskr import app, db
+from flaskr.models import Person
 from flaskr.utils.datetime import date_x
 
 bp = Blueprint('worklogs', __name__, url_prefix="/worklogs")
@@ -16,7 +16,7 @@ bp = Blueprint('worklogs', __name__, url_prefix="/worklogs")
 @bp.route('/<id>/<yymm>')
 @login_required
 def index(id, yymm):
-    person = PersonService.get_or_404(id)
+    person = Person.get_or_404(id)
     today = date_x.yymm_dd(yymm, 1)
     first = today
     last = first + relativedelta(months=1)
@@ -60,7 +60,7 @@ def edit(id, yymm, dd):
         date_x.yymm_dd(yymm, dd)
     except:
         abort(400)
-    person = PersonService.get_or_404(id)
+    person = Person.get_or_404(id)
     worklog = WorkLogService.get_or_new(id, yymm, dd)
     if person.staff:
         form = WorkLogFormStaff(obj=worklog)

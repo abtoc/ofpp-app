@@ -16,10 +16,16 @@ class PersonForm(FlaskForm):
         if 'obj' in kwargs:
             self.person_id.data = kwargs['obj'].id
         self.timerule_id.choices = [(tr.id, tr.caption) for tr in TimeRule.query.order_by(TimeRule.caption).all()]     
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.display):
+            obj.display = None
+        if not bool(obj.idm):
+            obj.idm = None
     def validate_idm(form, field):
         if len(field.data) == 0:
             return
         check = Person.query.filter(Person.idm == field.data, id != form.person_id.data).first()
         if check:
             raise ValidationError('同一IDMが指定されいています')
-    
+           

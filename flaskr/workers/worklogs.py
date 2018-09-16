@@ -10,8 +10,8 @@ def update_worklogs_value(id, yymm, dd=None):
         return
     if person.timerule_id is None:
         return
-    timerule = TimeRuleService.query.get(person.timerule_id)
-    if timerule is None:
+    rule = TimeRuleService(person.timerule_id)
+    if rule is None:
         return
     if dd is None:
         dd = range(1, 32)
@@ -28,7 +28,7 @@ def update_worklogs_value(id, yymm, dd=None):
         if not bool(log.work_out):
             continue
         app.logger.info('Updating Worklog value from TimeTable. id={} yymm={} dd={}'.format(id, yymm, d))
-        log.value, log.break_t, log.over_t, log.late, log.leave = timerule.calc(log.work_in, log.work_out)
+        log.value, log.break_t, log.over_t, log.late, log.leave = rule.calc(log.work_in, log.work_out)
         log.presented = True
         db.session.add(log)
     try:

@@ -12,6 +12,10 @@ class WorkLogForm(FlaskForm):
     late = BooleanField('遅刻')
     leave = BooleanField('早退')
     remarks = StringField('備考')
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.remarks):
+            obj.remarks = None
 
 class WorkLogFormStaff(FlaskForm):
     work_in = StringField('開始時間', validators=[Optional(), WorkTime()])
@@ -23,6 +27,14 @@ class WorkLogFormStaff(FlaskForm):
     late = BooleanField('遅刻')
     leave = BooleanField('早退')
     remarks = StringField('備考')
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.work_in):
+            obj.work_in = None
+        if not bool(obj.work_out):
+            obj.work_out = None
+        if not bool(obj.remarks):
+            obj.remarks = None
     def validate_absence(form, field):
         if not field.data:
             return

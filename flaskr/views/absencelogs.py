@@ -3,7 +3,6 @@ from dateutil.relativedelta import relativedelta
 from flask import Blueprint, render_template, redirect, url_for, flash, make_response
 from io import BytesIO
 from flask_login import login_required
-from flaskr.services.absencelogs import AbsenceLogService
 from flaskr.forms.absencelogs import AbsenseLogForm
 from flaskr.reports.absencelogs import AbsenceLogReport
 from flaskr.models import AbsenceLog
@@ -20,7 +19,7 @@ def default():
 @bp.route('/<yymm>')
 @login_required
 def index(yymm):
-    items = AbsenceLogService.query.filter(
+    items = AbsenceLog.query.filter(
         AbsenceLog.yymm==yymm
     ).order_by(
         AbsenceLog.yymm,
@@ -44,18 +43,20 @@ def index(yymm):
 @bp.route('/<id>/<yymm>/<dd>', methods=['GET', 'POST'])
 @login_required
 def edit(id, yymm, dd):
-    absencelog = AbsenceLogService.get_or_404(id, yymm, dd)
-    form = AbsenseLogForm(obj=absencelog)
+    item = AbsenceLog.get_or_404((id, yymm, dd))
+    form = AbsenseLogForm(obj=item)
     if form.validate_on_submit():
+        form.populate_obj(item)
+        db.session.add(item)
         try:
-            absencelog.update(form)
+            db.session.commit()
             flash('欠席時対応加算記録を更新しました','success')
             return redirect(url_for('absencelogs.index', yymm=yymm))
         except Exception as e:
             db.session.rollback()
             flash('欠席時対応加算記録更新時にエラーが発生しました {}'.format(e), 'danger')
             app.logger.exception(e)
-    return render_template('absencelogs/edit.pug', item=absencelog, form=form)
+    return render_template('absencelogs/edit.pug', item=item, form=form)
 
 @bp.route('/<yymm>/report')
 @login_required

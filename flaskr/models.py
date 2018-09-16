@@ -1,9 +1,10 @@
 from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
 from uuid import uuid4
 from werkzeug import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from flaskr import db
-
+from flaskr.utils.shortcuts import ModelMixInID
 def _get_now():
     return datetime.now()
 
@@ -11,7 +12,7 @@ def _get_uuid():
     return str(uuid4())
 
 # 利用者テーブル
-class Person(db.Model):
+class Person(db.Model, ModelMixInID):
     __tablename__ = 'persons'
     __table_args__ = (
         db.PrimaryKeyConstraint('id'),
@@ -45,7 +46,7 @@ class Person(db.Model):
         return self.__timerule
 
 # 受給者証テーブル
-class Recipient(db.Model):
+class Recipient(db.Model, ModelMixInID):
     __tablename__ = 'recipients'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id'),
@@ -70,9 +71,21 @@ class Recipient(db.Model):
             return self.__person
         self.__person = Person.query.get(self.person_id)
         return self.__person
+    def is_supply_over(self):
+        if not bool(self.supply_out):
+            return False
+        dead = date.today()
+        dead += relativedelta(months=1)
+        return self.supply_out < dead
+    def is_apply_over(self):
+        if not bool(self.apply_out):
+            return False
+        dead = date.today()
+        dead += relativedelta(months=1)
+        return self.apply_out < dead
 
 # 実績記録表
-class PerformLog(db.Model):
+class PerformLog(db.Model, ModelMixInID):
     __tablename__ = 'performlogs'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
@@ -117,11 +130,10 @@ class PerformLog(db.Model):
     def absencelog(self):
         if hasattr(self, '__absencelog'):
             return self.__absencelog
-        print('aaaa')
         self.__absencelog = AbsenceLog.query.get((self.person.id, self.yymm, self.dd))
 
 # 欠席時対応加算記録
-class AbsenceLog(db.Model):
+class AbsenceLog(db.Model, ModelMixInID):
     __tablename__ = 'absencelogs'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
@@ -164,7 +176,7 @@ class AbsenceLog(db.Model):
         return date(yy, mm, int(self.dd))
 
 # 勤怠記録表
-class WorkLog(db.Model):
+class WorkLog(db.Model, ModelMixInID):
     __tablename__ = 'worklogs'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
@@ -202,7 +214,7 @@ class WorkLog(db.Model):
         return self.__person
 
 # ユーザ
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin, ModelMixInID):
     __tablename__ = 'users'
     id = db.Column(db.String(36), primary_key=True, default=_get_uuid)
     userid = db.Column(db.String(20), nullable=False, unique=True)
@@ -229,7 +241,7 @@ class User(db.Model, UserMixin):
         return user, user.check_password(password)
 
 # 時間ルールテーブル
-class TimeRule(db.Model):
+class TimeRule(db.Model, ModelMixInID):
     __tablename__ = 'timerules'
     __table_args__ = (
         db.PrimaryKeyConstraint('id'),
@@ -255,5 +267,16 @@ class Option(db.Model):
     value = db.Column(db.String(512), nullable=False)
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @classmethod
+    def get(cls, name, value=None):
+        opt = cls.query.filter(cls.name == name).first()
+        return opt.value if bool(opt) else value
+    @classmethod
+    def set(cls, name, value):
+        opt = cls.query.filter(cls.name == name).first()
+        if opt is None:
+            opt = Option(name=name)
+        opt.value = value
+        db.session.add(opt) 
     def __repr__(self):
         return '<Option: id={0.id}, name={0.name}, value={0.value}>'.format(self)

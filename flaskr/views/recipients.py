@@ -1,34 +1,32 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flask_login import login_required
+from flaskr import app, db
 from flaskr.forms.recipients import RecipientForm
-from flaskr.services.recipients import RecipientService
-from flaskr import db
+from flaskr.models import Recipient
 
 bp = Blueprint('recipients', __name__, url_prefix='/recipients')
 
 @bp.route('/')
 @login_required
 def index():
-    items = RecipientService.query.all()
+    items = Recipient.query.all()
     return render_template('recipients/index.pug', items=items)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(id):
-    recipient = RecipientService.get_or_404(id)
-    form = RecipientForm(obj=recipient)
+    item = Recipient.get_or_404(id)
+    form = RecipientForm(obj=item)
     if form.validate_on_submit():
+        form.populate_obj(item)
+        db.session.add(item)
         try:
-            recipient.update(form)
+            db.session.commit()
             flash('受給者証の変更ができました', 'success')
             return redirect(url_for('recipients.index'))
-        except ValueError as e:
-            db.session.rollback()
-            flash(e, 'danger')
         except Exception as e:
             db.session.rollback()
             flash('受給者証変更時にエラーが発生しました {}'.format(e), 'danger')
-            from traceback import format_exc
-            print(format_exc)
-    return render_template('recipients/edit.pug', item=recipient, form=form)
+            app.logger.exception(e)
+    return render_template('recipients/edit.pug', item=item, form=form)
 

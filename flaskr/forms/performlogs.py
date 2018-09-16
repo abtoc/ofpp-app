@@ -30,6 +30,14 @@ class PerformLogFormIDM(FlaskForm):
             worklog = WorkLog.query.get((obj.person_id, obj.yymm, obj.dd))
             if worklog is not None:
                 self.value_.data = worklog.value
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.work_in):
+            obj.work_in = None
+        if not bool(obj.work_out):
+            obj.work_out = None
+        if not bool(obj.remarks):
+            obj.remarks = None
     def validate_absence(form, field):
         if not field.data:
             return
@@ -60,6 +68,10 @@ class PerformLogForm(FlaskForm):
             worklog = WorkLog.query.get((obj.person_id, obj.yymm, obj.dd))
             if worklog is not None:
                 self.value_.data = worklog.value
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.remarks):
+            obj.remarks = None     
     def validate_absence(form, field):
         if not field.data:
             return

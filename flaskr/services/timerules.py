@@ -3,15 +3,13 @@ from flaskr import db
 from flaskr.models import TimeRule
 import json
 
-class TimeRuleService(TimeRule):
-    def update(self, form):
-        form.populate_obj(self)
-        db.session.add(self)
-        db.session.commit()
+class TimeRuleService:
+    def __init__(self, id):
+        self.item = TimeRule.get(id)
     def calc(self, work_in, work_out):
         if (not bool(work_in)) or (not bool(work_out)):
             return None, None, None, None, None
-        rules = json.loads(self.rules)
+        rules = json.loads(self.item.rules)
         w_in = rules['core']['start']
         w_out = rules['core']['end']
         for i in rules['times']:
@@ -37,10 +35,4 @@ class TimeRuleService(TimeRule):
         if value > rules['core']['value']:
             over_t = value - rules['core']['value']
         return value, break_t, over_t, w_in > rules['core']['start'], w_out < rules['core']['end']
-    @classmethod
-    def get_or_404(cls, id):
-        result = cls.query.get(id)
-        if result is None:
-            abort(404)
-        return result
 

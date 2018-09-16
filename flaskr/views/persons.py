@@ -1,16 +1,19 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flask_login import login_required
 from flaskr.forms.persons import PersonForm
-from flaskr.services.persons import PersonService
-from flaskr import db
-from flaskr.models import Recipient
+from flaskr import app, db
+from flaskr.models import Person, Recipient
 
 bp = Blueprint('persons', __name__, url_prefix='/persons')
 
 @bp.route('/')
 @login_required
 def index():
-    items = PersonService.get_all_no_staff()
+    items = Person.query.filter(
+        Person.staff == False
+    ).order_by(
+        Person.name
+    ).all()
     return render_template('persons/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -18,51 +21,52 @@ def index():
 def create():
     form = PersonForm()
     if form.validate_on_submit():
-        person = PersonService(staff=False)
+        item = Person(staff=False)
+        form.populate_obj(item)
+        db.session.add(item)
         try:
-            person.insert(form)
+            db.session.commit()
+            recipient = Recipient(person_id=item.id)
+            db.session.add(recipient)
+            db.session.commit()
             flash('利用者の登録ができました', 'success')
             return redirect(url_for('persons.index'))
-        except ValueError as e:
-            db.session.rollback()
-            flash(e, 'danger')
         except Exception as e:
             db.session.rollback()
             flash('利用者登録時にエラーが発生しました {}'.format(e), 'danger')
-            from traceback import format_exc
-            print(format_exc())
+            app.logger.exception(e)
     return render_template('persons/edit.pug', form=form)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(id):
-    person = PersonService.get_or_404(id)
-    form = PersonForm(obj=person)
+    item = Person.get_or_404(id)
+    form = PersonForm(obj=item)
     if form.validate_on_submit():
+        form.populate_obj(item)
+        db.session.add(item)
         try:
-            person.update(form)
+            db.session.commit()
             flash('利用者の変更ができました', 'success')
             return redirect(url_for('persons.index'))
-        except ValueError as e:
-            db.session.rollback()
-            flash(e, 'danger')
         except Exception as e:
             db.session.rollback()
             flash('利用者変更時にエラーが発生しました {}'.format(e), 'danger')
-            from traceback import format_exc
-            print(format_exc())
+            app.logger.exception(e)
     return render_template('persons/edit.pug', id=id, form=form)
 
 @bp.route('/<id>/destroy')
 @login_required
 def destroy(id):
-    person = PersonService.get_or_404(id)
+    item = Person.get_or_404(id)
+    if bool(item.recipient):
+        db.session.delete(item.recipient)
+    db.session.delete(item)
     try:
-        person.delete()
+        db.session.commit()
         flash('利用者の削除ができました', 'success')
     except Exception as e:
         db.session.rollback()
         flash('利用者削除時にエラーが発生しました {}'.format(e), 'danger')
-        from traceback import format_exc
-        print(format_exc())
+        app.logger.exception(e)
     return redirect(url_for('persons.index'))

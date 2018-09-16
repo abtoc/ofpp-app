@@ -5,18 +5,18 @@ from flask import Blueprint, render_template, redirect, make_response, url_for, 
 from flask_login import login_required
 from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogForm
 from flaskr.services.performlogs import PerformLogService
-from flaskr.services.persons import PersonService
 from flaskr.services.worklogs import WorkLogService
 from flaskr import app, db, cache
 from flaskr.utils.datetime import date_x
 from flaskr.reports.performlogs import PerformLogReport
+from flaskr.models import Person
 
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
 @bp.route('/<id>/<yymm>')
 @login_required
 def index(id, yymm):
-    person = PersonService.get_or_404(id)
+    person = Person.get_or_404(id)
     if person.staff:
         flash('職員はこの画面はサポートしておりません', 'danger')
         return redirect(url_for('index'))
@@ -64,7 +64,7 @@ def edit(id, yymm, dd):
         date_x.yymm_dd(yymm, dd)
     except:
         abort(400)
-    person = PersonService.get_or_404(id)
+    person = Person.get_or_404(id)
     if person.staff:
         flash('職員はこの画面はサポートしておりません', 'danger')
         return redirect(url_for('index'))
@@ -94,7 +94,7 @@ def edit(id, yymm, dd):
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 @login_required
 def destroy(id, yymm, dd):
-    person = PersonService.get_or_404(id)
+    person = Person.get_or_404(id)
     if person.staff:
         flash('職員はこの画面はサポートしておりません', 'danger')
         return redirect(url_for('index'))
