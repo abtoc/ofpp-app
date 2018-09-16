@@ -10,6 +10,7 @@ from flaskr import app, db, cache
 from flaskr.utils.datetime import date_x
 from flaskr.reports.performlogs import PerformLogReport
 from flaskr.models import Person
+from flaskr.workers.performlogs import update_performlogs_enabled
 
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
@@ -122,3 +123,9 @@ def report(id, yymm):
         response = make_response(output.getvalue())
         response.mimetype = 'application/pdf'
     return response
+
+@bp.route('/<id>/<yymm>/update')
+@login_required
+def update(id, yymm):
+    update_performlogs_enabled.delay(id, yymm)
+    return redirect(url_for('performlogs.index',id=id, yymm=yymm))

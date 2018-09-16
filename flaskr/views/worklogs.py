@@ -10,6 +10,7 @@ from flaskr.reports.worklogs import WorkLogReport
 from flaskr import app, db
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
+from flaskr.workers.worklogs import update_worklogs_value
 
 bp = Blueprint('worklogs', __name__, url_prefix="/worklogs")
 
@@ -112,3 +113,9 @@ def report(id, yymm):
         response = make_response(output.getvalue())
         response.mimetype = 'application/pdf'
     return response
+
+@bp.route('/<id>/<yymm>/update')
+@login_required
+def update(id, yymm):
+    update_worklogs_value.delay(id, yymm)
+    return redirect(url_for('worklogs.index', id=id, yymm=yymm))
