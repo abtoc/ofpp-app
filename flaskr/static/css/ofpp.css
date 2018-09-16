@@ -1,4 +1,9 @@
 .disabled {
-    background-color: #eeeeee;
+    background-color: #eee;
     color: #5555;
+}
+.btn-default {
+    background-color: #f8f8f8;
+    color: #333;
+    border-color: #e7e7e7; 
 }
