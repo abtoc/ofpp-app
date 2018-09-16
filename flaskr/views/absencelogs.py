@@ -30,11 +30,13 @@ def index(yymm):
     first = today
     last = first + relativedelta(months=1)
     prev = first - relativedelta(months=1)
+    this = date_x()
     kw = dict(
         yymm = yymm,
         today = today.date,
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
+        this = this.date.strftime('%Y%m'),
         items = items
     )
     return render_template('absencelogs/index.pug', **kw)

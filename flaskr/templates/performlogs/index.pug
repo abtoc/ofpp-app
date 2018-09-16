@@ -9,38 +9,39 @@ block content
         .col-xs-3
             b 「 {{ name }} 」
             b 実績記録表
-        .col-xs-5
+        .col-xs-4
             .hidden-print
                 a(href="{{ url_for('worklogs.index', id=id, yymm=yymm) }}") 勤怠記録
                 span &nbsp; &nbsp;
                 a(href="{{ url_for('absencelogs.index', yymm=yymm) }}") 欠席時対応記録
-        .col-xs-2
+        .col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('performlogs.index', id=id, yymm=this) }}") 今月
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=next) }}") 翌月 >>
     table.table.table-hover
         thead
             tr
-                th 日付
-                th 曜日
-                th 状態
-                th 開始時刻
-                th 終了時刻
-                th 送迎(往)
-                th 送迎(復)
-                th 訪問支援
-                th 食事
-                th 医療
-                th 体験
-                th 施設外就労
-                th 施設外支援
+                th.text-center 日付
+                th.text-center 曜日
+                th.text-center 状態
+                th.text-center 開始時刻
+                th.text-center 終了時刻
+                th.text-center 送迎(往)
+                th.text-center 送迎(復)
+                th.text-center 訪問支援
+                th.text-center 食事
+                th.text-center 医療
+                th.text-center 体験
+                th.text-center 施設外就労
+                th.text-center 施設外支援
                 th 備考
                 th
         tbody
             for item in items
                 tr
-                    td
+                    td.text-center
                         | {{ item.dd }}
                         if item.enabled == None
                             |
@@ -54,23 +55,23 @@ block content
                             | ○
                         else
                             | ×
-                    td= item.date | weeka
-                    td
+                    td.text-center= item.date | weeka
+                    td.text-center
                         if item.absence
                             if item.absence_add
                                 | 欠席(加算)
                             else
                                 | 欠席
-                    td= item.work_in | do_not_show_none
-                    td= item.work_out | do_not_show_none
-                    td= '○' if item.pickup_in else ''
-                    td= '○' if item.pickup_out else ''
-                    td= item.visit | do_not_show_none
-                    td= '○' if item.meal else ''
-                    td= item.medical | do_not_show_none
-                    th= item.experience | do_not_show_none
-                    th= '○' if item.outemp else ''
-                    th= '○' if item.outside else ''
+                    td.text-center= item.work_in | do_not_show_none
+                    td.text-center= item.work_out | do_not_show_none
+                    td.text-center= '○' if item.pickup_in else ''
+                    td.text-center= '○' if item.pickup_out else ''
+                    td.text-center= item.visit | do_not_show_none
+                    td.text-center= '○' if item.meal else ''
+                    td.text-center= item.medical | do_not_show_none
+                    td.text-center= item.experience | do_not_show_none
+                    td.text-center= '○' if item.outemp else ''
+                    td.text-center= '○' if item.outside else ''
                     td= item.remarks | do_not_show_none
                     td: .hidden-print: .text-right: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集

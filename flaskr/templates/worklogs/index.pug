@@ -9,34 +9,35 @@ block content
         .col-xs-3
             b 「 {{ name }} 」
             b 出勤簿
-        .col-xs-5
+        .col-xs-4
             .hidden-print
                 if not staff
                     a(href="{{ url_for('performlogs.index', id=id, yymm=yymm) }}") 実績記録
-        .col-xs-2
+        .col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('worklogs.index', id=id, yymm=this) }}") 今月
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=next) }}") 翌月 >>
     table.table.table-hover
         thead
             tr
-                th 日付
-                th 曜日
-                th 開始時刻
-                th 終了時刻
-                th 勤務時間
-                th 休憩時間
-                th 残業時間
-                th 欠勤
-                th 遅刻
-                th 早退
+                th.text-center 日付
+                th.text-center 曜日
+                th.text-center 開始時刻
+                th.text-center 終了時刻
+                th.text-center 勤務時間
+                th.text-center 休憩時間
+                th.text-center 残業時間
+                th.text-center 欠勤
+                th.text-center 遅刻
+                th.text-center 早退
                 th 備考
                 th
         tbody
             for item in items
                 tr
-                    td
+                    td.text-center
                         | {{ item.dd }}
                         if item.presented == None
                             |
@@ -44,15 +45,15 @@ block content
                             | ○
                         else
                             | ×
-                    td= item.date | weeka
-                    td= item.work_in | do_not_show_none
-                    td= item.work_out | do_not_show_none
-                    td= item.value | do_not_show_none
-                    td= item.break_t | do_not_show_none
-                    td= item.over_t | do_not_show_none
-                    td= '○' if item.absence else ''
-                    td= '○' if item.late else ''
-                    td= '○' if item.leave else ''
+                    td.text-center= item.date | weeka
+                    td.text-center= item.work_in | do_not_show_none
+                    td.text-center= item.work_out | do_not_show_none
+                    td.text-center= item.value | do_not_show_none
+                    td.text-center= item.break_t | do_not_show_none
+                    td.text-center= item.over_t | do_not_show_none
+                    td.text-center= '○' if item.absence else ''
+                    td.text-center= '○' if item.late else ''
+                    td.text-center= '○' if item.leave else ''
                     td= item.remarks | do_not_show_none
                     td: .hidden-print: .text-right: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集

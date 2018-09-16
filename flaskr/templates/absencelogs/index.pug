@@ -8,11 +8,12 @@ block content
             b= today | strftime('%Y年%m月')
         .col-xs-3
             b 欠席時対応加算記録
-        .col-xs-5
-        .col-xs-2
+        .col-xs-4
+        .col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('absencelogs.index', yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('absencelogs.index', yymm=this) }}") 今月
                     li: a(href="{{ url_for('absencelogs.index', yymm=next) }}") 翌月 >>
     table.table.table-hover
         thead

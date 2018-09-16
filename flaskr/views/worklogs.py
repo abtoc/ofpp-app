@@ -20,6 +20,7 @@ def index(id, yymm):
     first = today
     last = first + relativedelta(months=1)
     prev = first - relativedelta(months=1)
+    this = date_x()
     items = []
     while first.date < last.date:
         ym = first.date.strftime('%Y%m')
@@ -33,6 +34,7 @@ def index(id, yymm):
         staff = person.staff,
         name = person.name,
         today = today.date,
+        this = this.date.strftime('%Y%m'),
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
         items = items
