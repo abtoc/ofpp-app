@@ -75,28 +75,3 @@ class PerformLogService(PerformLog):
         db.session.delete(self)
         db.session.commit()
         update_performlogs_enabled.delay(self.person_id, self.yymm)
-    @property
-    def url_edit(self):
-        return url_for('performlogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
-    @property
-    def url_delete(self):
-        if self.enabled is None:
-            return url_for('performlogs.index', id=self.person_id, yymm=self.yymm)
-        return url_for('performlogs.destroy', id=self.person_id, yymm=self.yymm, dd=self.dd)
-    @classmethod
-    def get_or_new(cls, id, yymm, dd):
-        result = cls.query.get((id, yymm, dd))
-        if result is None:
-            result = cls(person_id=id, yymm=yymm, dd=dd)
-        return result
-    @classmethod
-    def get_or_404(cls, id, yymm, dd):
-        result = cls.query.get((id, yymm, dd))
-        if result is None:
-            abort(404)
-        return result
-    @classmethod
-    def get_date(cls, id, d):
-        yymm = d.strftime('%Y%m')
-        dd = d.day
-        return cls.query.get((id, yymm, dd))

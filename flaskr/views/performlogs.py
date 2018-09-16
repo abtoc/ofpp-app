@@ -98,8 +98,8 @@ def destroy(id, yymm, dd):
     if person.staff:
         flash('職員はこの画面はサポートしておりません', 'danger')
         return redirect(url_for('index'))
-    performlog = PerformLogService.get_or_404(id, yymm, dd)
-    worklog = WorkLogService.get_or_404(id, yymm, dd)
+    performlog = PerformLogService.get_or_404((id, yymm, dd))
+    worklog = WorkLogService.get_or_404((id, yymm, dd))
     if (cache.get('person.idm') != person.idm):
         if bool(performlog.work_in) or bool(performlog.work_out) or bool(worklog.value):
             flash('利用者のICカードをタッチしてください', 'danger')

@@ -2,6 +2,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from uuid import uuid4
 from werkzeug import check_password_hash, generate_password_hash
+from flask import url_for
 from flask_login import UserMixin
 from flaskr import db
 from flaskr.utils.shortcuts import ModelMixInID, ModelMixInYYMMDD
@@ -131,6 +132,14 @@ class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
         if hasattr(self, '__absencelog'):
             return self.__absencelog
         self.__absencelog = AbsenceLog.query.get((self.person.id, self.yymm, self.dd))
+    @property
+    def url_edit(self):
+        return url_for('performlogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
+    @property
+    def url_delete(self):
+        if self.enabled is None:
+            return url_for('performlogs.index', id=self.person_id, yymm=self.yymm)
+        return url_for('performlogs.destroy', id=self.person_id, yymm=self.yymm, dd=self.dd)
 
 # 欠席時対応加算記録
 class AbsenceLog(db.Model, ModelMixInID):
@@ -212,6 +221,14 @@ class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
             return self.__person
         self.__person = Person.query.get(self.person_id)
         return self.__person
+    @property
+    def url_edit(self):
+        return url_for('worklogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
+    @property
+    def url_delete(self):
+        if self.presented is None:
+           return url_for('worklogs.index', id=self.person_id, yymm=self.yymm)
+        return url_for('worklogs.destory', id=self.person_id, yymm=self.yymm, dd=self.dd)
 
 # ユーザ
 class User(db.Model, UserMixin, ModelMixInID):

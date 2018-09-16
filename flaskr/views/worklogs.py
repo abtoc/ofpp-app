@@ -90,7 +90,7 @@ def edit(id, yymm, dd):
 @bp.route('/<id>/<yymm>/<dd>/destroy')
 @login_required
 def destory(id, yymm, dd):
-    worklog = WorkLogService.get_or_404(id, yymm, dd)
+    worklog = WorkLogService.get_or_404((id, yymm, dd))
     try:
         worklog.delete()
         flash('勤怠の削除ができました', 'success')

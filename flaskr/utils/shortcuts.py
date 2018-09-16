@@ -18,3 +18,8 @@ class ModelMixInYYMMDD(object):
         if result is None:
             result = cls(person_id=id, yymm=yymm, dd=dd)
         return result
+    @classmethod
+    def get_date(cls, id, date):
+        yymm = date.strftime('%Y%m')
+        dd = date.day
+        return cls.query.get((id, yymm, dd))

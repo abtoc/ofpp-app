@@ -49,28 +49,3 @@ class WorkLogService(WorkLog):
             raise ValueError('利用者の勤怠削除は実績登録から削除してください')
         db.session.delete(self)
         db.session.commit()
-    @property
-    def url_edit(self):
-        return url_for('worklogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
-    @property
-    def url_delete(self):
-        if self.presented is None:
-           return url_for('worklogs.index', id=self.person_id, yymm=self.yymm)
-        return url_for('worklogs.destory', id=self.person_id, yymm=self.yymm, dd=self.dd)
-    @classmethod
-    def get_or_new(cls, id, yymm, dd):
-        result = cls.query.get((id, yymm, dd))
-        if result is None:
-            result = cls(person_id=id, yymm=yymm, dd=dd)
-        return result
-    @classmethod
-    def get_or_404(cls, id, yymm, dd):
-        result = cls.query.get((id, yymm, dd))
-        if result is None:
-            abort(404)
-        return result
-    @classmethod
-    def get_date(cls, id, d):
-        yymm = d.strftime('%Y%m')
-        dd = d.day
-        return cls.query.get((id, yymm, dd))
