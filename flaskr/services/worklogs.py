@@ -56,7 +56,7 @@ class WorkLogService(WorkLog):
         self.work_in = performlog.work_in
         self.work_out = performlog.work_out
         self.absence = performlog.absence
-        self.presented = bool(self.work_in) or bool(self.work_out)
+        self.presented = bool(self.work_in) or bool(self.work_out) or bool(self.value)
         db.session.add(self)
         db.session.commit()
         update_worklogs_value.delay(self.person_id, self.yymm, self.dd)

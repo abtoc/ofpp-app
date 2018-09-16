@@ -23,6 +23,10 @@ def update_worklogs_value(id, yymm, dd=None):
             continue
         if log.value is not None:
             continue
+        if not bool(log.work_in):
+            continue
+        if not bool(log.work_out):
+            continue
         app.logger.info('Updating Worklog value from TimeTable. id={} yymm={} dd={}'.format(id, yymm, d))
         log.value, log.break_t, log.over_t, log.late, log.leave = timerule.calc(log.work_in, log.work_out)
         log.presented = True
