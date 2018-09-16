@@ -26,6 +26,7 @@ html(lang="ja")
                             a.dropdown-toggle(data-toggle="dropdown",role="button") 各種帳票
                             ul.dropdown-menu(role="menu")
                                 li: a(href="{{ url_for('absencelogs.default') }}") 欠席時対応加算記録
+                                li: a(href="{{ url_for('summarys.default') }}") 月次集計表
                         li.dropdown
                             a.dropdown-toggle(data-toggle="dropdown",role="button") マスター登録
                             ul.dropdown-menu(role="menu")

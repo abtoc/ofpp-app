@@ -1,0 +1,57 @@
+extends summarys/layout.pug
+
+block title
+  | 月次集計 - ペタペタシステム
+block content
+    .row
+        .col-xs-2
+            b= today | strftime('%Y年%m月')
+        .col-xs-7
+            b 月次集計表
+        .col-xs-3
+            nav(aria-label="ページャー")
+                ul.pager.hidden-print
+                    li: a(href="{{ url_for('summarys.index', yymm=prev) }}") << 前月
+                    li: a(href="{{ url_for('summarys.index', yymm=this) }}") 今月
+                    li: a(href="{{ url_for('summarys.index', yymm=next) }}") 翌月 >>
+    table.table.table-hover
+        thead
+            tr
+                th.text-center 氏名
+                th.text-center 利用日数
+                th.text-center 勤務日数
+                th.text-center 勤務時間
+                th.text-center 欠勤日数
+                th.text-center 遅刻日数
+                th.text-center 早退日数
+        tbody
+            for item in items
+                tr
+                    td.text-center= item.person.name
+                    td.text-center
+                        a(href="{{ url_for('performlogs.index', id=item.id, yymm=yymm) }}")
+                            | {{ item.usedate }}
+                    td.text-center
+                        a(href="{{ url_for('worklogs.index', id=item.id, yymm=yymm) }}")
+                            | {{ item.presented }}
+                    td.text-center= item.value
+                    td.text-center= item.absence
+                    td.text-center= item.late
+                    td.text-center= item.leave
+        tfoot
+            tr
+                td.text-center 合計
+                td.text-center= foot.usedate
+                td.text-center= foot.presented
+                td.text-center= foot.value
+                td.text-center= foot.absence
+                td.text-center= foot.late
+                td.text-center= foot.leave
+            tr 
+                th
+                th.text-center 利用日数
+                th.text-center 勤務日数
+                th.text-center 勤務時間
+                th.text-center 欠勤日数
+                th.text-center 遅刻日数
+                th.text-center 早退日数

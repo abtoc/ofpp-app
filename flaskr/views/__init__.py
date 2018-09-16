@@ -99,3 +99,5 @@ from flaskr.views.absencelogs import bp
 app.register_blueprint(absencelogs.bp)
 from flaskr.views.auth import bp
 app.register_blueprint(auth.bp)
+from flaskr.views.summarys import bp
+app.register_blueprint(summarys.bp)
