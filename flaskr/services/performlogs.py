@@ -19,7 +19,7 @@ class PerformLogService(PerformLog):
             return True
         if self.absence_add:
             return True
-        if (self.pickup_in) or (self.pikup_out):
+        if (self.pickup_in) or (self.pickup_out):
             return True
         if self.visit:
             return True

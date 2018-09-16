@@ -1,4 +1,5 @@
 from dateutil.relativedelta import relativedelta
+from collections import namedtuple
 from flask_login import login_required
 from collections import namedtuple
 from io import BytesIO
@@ -28,6 +29,16 @@ def index(id, yymm):
         worklog = WorkLogService.get_or_new(id, ym, d)
         items.append(worklog)
         first += relativedelta(days=1)
+    Foot = namedtuple('Foor', ('presented', 'value', 'break_t', 'over_t', 'absence', 'late', 'leave'))
+    foot = Foot(
+        len([i for i in items if i.presented]),
+        sum([i.value for i in items if i.value is not None]),
+        sum([i.break_t for i in items if i.break_t is not None]),
+        sum([i.over_t for i in items if i.over_t is not None]),
+        len([i for i in items if i.absence]),
+        len([i for i in items if i.late]),
+        len([i for i in items if i.leave]),
+    )
     kw = dict(
         id = id,
         yymm = yymm,
@@ -37,7 +48,8 @@ def index(id, yymm):
         this = this.date.strftime('%Y%m'),
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
-        items = items
+        items = items,
+        foot = foot
     )
     return render_template('worklogs/index.pug', **kw)
 

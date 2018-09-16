@@ -37,7 +37,7 @@ block content
         tbody
             for item in items
                 tr
-                    td.text-center
+                    td.text-right
                         | {{ item.dd }}
                         if item.presented == None
                             |
@@ -58,6 +58,17 @@ block content
                     td: .hidden-print: .text-right: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
                         a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
+        tfoot
+            tr
+                td.text-center(colspan="2") 合計
+                td.text-center(colspan="2")= foot.presented
+                td.text-center= foot.value
+                td.text-center= foot.break_t
+                td.text-center= foot.over_t
+                td.text-center= foot.absence
+                td.text-center= foot.late
+                td.text-center= foot.leave
+                td(colspan="2")
     script.
         $(function(){
             $(".confirm").on('click',function(){
