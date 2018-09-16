@@ -1,7 +1,7 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from flaskr import app, db, celery
-from flaskr.models import Person, PerformLog
+from flaskr.models import Person, PerformLog, WorkLog
 
 @celery.task
 def update_performlogs_enabled(id, yymm):
@@ -25,11 +25,16 @@ def update_performlogs_enabled(id, yymm):
     ).all()
     count = 0
     for log in logs:
-        if log.presented:
+        worklog = WorkLog.get_or_new(log.person_id, log.yymm, log.dd)
+        if worklog.presented:
             count = count + 1
             if count > last:
                 log.presented = False
                 log.enabled = False
+                db.session.add(log)
+            else:
+                log.presented = True
+                log.enabled = True
                 db.session.add(log)
     try:
         db.session.commit()

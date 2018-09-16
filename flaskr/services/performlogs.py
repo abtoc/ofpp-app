@@ -74,6 +74,7 @@ class PerformLogService(PerformLog):
             db.session.delete(worklog)
         db.session.delete(self)
         db.session.commit()
+        update_performlogs_enabled.delay(self.person_id, self.yymm)
     @property
     def url_edit(self):
         return url_for('performlogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
