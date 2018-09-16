@@ -4,7 +4,7 @@ from uuid import uuid4
 from werkzeug import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from flaskr import db
-from flaskr.utils.shortcuts import ModelMixInID
+from flaskr.utils.shortcuts import ModelMixInID, ModelMixInYYMMDD
 def _get_now():
     return datetime.now()
 
@@ -85,7 +85,7 @@ class Recipient(db.Model, ModelMixInID):
         return self.apply_out < dead
 
 # 実績記録表
-class PerformLog(db.Model, ModelMixInID):
+class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     __tablename__ = 'performlogs'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
@@ -176,7 +176,7 @@ class AbsenceLog(db.Model, ModelMixInID):
         return date(yy, mm, int(self.dd))
 
 # 勤怠記録表
-class WorkLog(db.Model, ModelMixInID):
+class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     __tablename__ = 'worklogs'
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),

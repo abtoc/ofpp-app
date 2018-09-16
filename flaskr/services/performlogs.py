@@ -1,8 +1,8 @@
 from flask import url_for, abort
 from flaskr import db
 from flaskr.models import PerformLog
-from flaskr.services import worklogs
 from flaskr.workers.performlogs import update_performlogs_enabled
+from flaskr.workers.worklogs import update_worklogs_value
 from flaskr.models import AbsenceLog, WorkLog
 
 class PerformLogService(PerformLog):
@@ -34,7 +34,7 @@ class PerformLogService(PerformLog):
         return False        
     def update(self, form):
         form.populate_obj(self)
-        worklog = worklogs.WorkLogService.get_or_new(self.person_id, self.yymm, self.dd)
+        worklog = WorkLog.get_or_new(self.person_id, self.yymm, self.dd)
         self.presented = self.is_presented(worklog)
         self.enabled = self.is_enabled()
         db.session.add(self)
@@ -45,9 +45,9 @@ class PerformLogService(PerformLog):
             absencelog = AbsenceLog(person_id=self.person_id, yymm=self.yymm, dd=self.dd)
             db.session.add(absencelog)
         db.session.commit()
-        worklog.update_performlog(self)
+        self.update_to_worklog(worklog)
         update_performlogs_enabled.delay(self.person_id, self.yymm)
-    def sync_worklog(self, worklog):
+    def sync_from_worklog(self, worklog):
         self.absence = False
         self.absence_add = False
         self.work_in = worklog.work_in
@@ -58,6 +58,14 @@ class PerformLogService(PerformLog):
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog):
             db.session.delete(absencelog)
+    def update_to_worklog(self, worklog):
+        worklog.work_in = self.work_in
+        worklog.work_out = self.work_out
+        worklog.absence = self.absence
+        worklog.presented = bool(worklog.work_in) or bool(worklog.work_out) or bool(worklog.value)
+        db.session.add(worklog)
+        db.session.commit()
+        update_worklogs_value.delay(worklog.person_id, worklog.yymm, worklog.dd)
     def delete(self):
         if bool(self.absencelog):
             db.session.delete(self.absencelog)

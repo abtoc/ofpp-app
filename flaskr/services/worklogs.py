@@ -1,7 +1,7 @@
 from flask import url_for, abort
 from flaskr import db
 from flaskr.models import WorkLog, PerformLog
-from flaskr.services import performlogs
+from flaskr.services.performlogs import PerformLogService
 from flaskr.workers.worklogs import update_worklogs_value
 from flaskr.workers.performlogs import update_performlogs_enabled
 
@@ -22,8 +22,8 @@ class WorkLogService(WorkLog):
         else:
             self.presented = False
         db.session.add(self)
-        performlog = performlogs.PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
-        performlog.sync_worklog(self)
+        performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+        performlog.sync_from_worklog(self)
         db.session.commit()
         update_worklogs_value.delay(self.person_id, self.yymm, self.dd)
         update_performlogs_enabled.delay(self.person_id, self.yymm)
@@ -38,20 +38,12 @@ class WorkLogService(WorkLog):
         self.absence = False
         db.session.add(self)
         if not self.person.staff:
-            performlog = performlogs.PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
-            performlog.sync_worklog(self)
+            performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
+            performlog.sync_from_worklog(self)
         db.session.commit()
         update_worklogs_value.delay(self.person_id, self.yymm, self.dd)
         if not self.person.staff:
             update_performlogs_enabled.delay(self.person_id, self.yymm)
-    def update_performlog(self, performlog):
-        self.work_in = performlog.work_in
-        self.work_out = performlog.work_out
-        self.absence = performlog.absence
-        self.presented = bool(self.work_in) or bool(self.work_out) or bool(self.value)
-        db.session.add(self)
-        db.session.commit()
-        update_worklogs_value.delay(self.person_id, self.yymm, self.dd)
     def delete(self):
         if not self.person.staff:
             raise ValueError('利用者の勤怠削除は実績登録から削除してください')

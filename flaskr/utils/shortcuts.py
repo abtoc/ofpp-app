@@ -11,3 +11,10 @@ class ModelMixInID(object):
             abort(404)
         return result
 
+class ModelMixInYYMMDD(object):
+    @classmethod
+    def get_or_new(cls, id, yymm, dd):
+        result = cls.query.get((id, yymm, dd))
+        if result is None:
+            result = cls(person_id=id, yymm=yymm, dd=dd)
+        return result
