@@ -14,9 +14,10 @@ def default():
     return redirect(url_for('summarys.index', yymm=date.today().strftime('%Y%m')))
 
 def make_foot(items):
-    Foot = namedtuple('foot', ('usedate', 'presented', 'value', 'absence', 'late', 'leave'))
+    Foot = namedtuple('foot', ('usedate', 'absence_add',  'presented', 'value', 'absence', 'late', 'leave'))
     foot = Foot(
         sum([item.usedate for item in items if item.usedate is not None]),
+        sum([item.absence_add for item in items if item.absence_add is not None]),
         sum([item.presented for item in items if item.presented is not None]),
         sum([item.value for item in items if item.value is not None]),
         sum([item.absence for item in items if item.absence is not None]),

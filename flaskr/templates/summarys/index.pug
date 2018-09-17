@@ -19,6 +19,7 @@ block content
             tr
                 th.text-center 氏名
                 th.text-center 利用日数
+                th.text-center 欠席加算
                 th.text-center 勤務日数
                 th.text-center 勤務時間
                 th.text-center 欠勤日数
@@ -31,6 +32,7 @@ block content
                     td.text-center
                         a(href="{{ url_for('performlogs.index', id=item.id, yymm=yymm) }}")
                             | {{ item.usedate | do_not_show_none }}
+                    td.text-center= item.absence_add
                     td.text-center
                         a(href="{{ url_for('worklogs.index', id=item.id, yymm=yymm) }}")
                             | {{ item.presented | do_not_show_none}}
@@ -42,6 +44,7 @@ block content
             tr
                 td.text-center 合計
                 td.text-center= foot.usedate
+                td.text-center= foot.absence_add
                 td.text-center= foot.presented
                 td.text-center= foot.value
                 td.text-center= foot.absence
@@ -50,6 +53,7 @@ block content
             tr 
                 th
                 th.text-center 利用日数
+                th.text-center 欠席加算
                 th.text-center 勤務日数
                 th.text-center 勤務時間
                 th.text-center 欠勤日数

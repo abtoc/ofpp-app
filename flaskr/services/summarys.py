@@ -15,6 +15,15 @@ class SummaryService:
             PerformLog.presented == True
         ).first()
         self.usedate = q[0] if q[0] is not None else 0
+        # 欠席加算
+        q = db.session.query(
+           func.count(PerformLog.absence_add)
+        ).filter(
+            PerformLog.person_id == self.id,
+            PerformLog.yymm == yymm,
+            PerformLog.absence_add == True
+        ).first()
+        self.absence_add = q[0] if q[0] is not None else 0
         # 勤務日数
         q = db.session.query(
             func.count(WorkLog.presented)
