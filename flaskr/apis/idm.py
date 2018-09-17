@@ -37,7 +37,7 @@ def post(idm):
     worklog = WorkLogService.get_or_new(person.id, yymm, dd)
     try:
         worklog.update_api(now)
-        update_worklogs_value.delay(person.id, yymm, dd)
+        update_worklogs_value.run(person.id, yymm, dd)
         if not person.staff:
             update_performlogs_enabled.delay(person.id, yymm)
     except Exception as e:
