@@ -2,21 +2,33 @@ extends layout_printer.pug
 block title
     | 月次集計表
 block content
-    h1 月次集計表
+    h1 {{ today | strftime('%Y年%m月分') }}&nbsp;月次集計表
     table
-        tr
-            th 氏名
-            th 利用日数
-            th 勤務日数
-            th 勤務時間
-            th 欠勤日数
-            th 遅刻日数
-            th 早退日数
-        tr
-            td テスト太郎
-            td 22
-            td 30
-            td 120.0
-            td 0
-            td 0
-            td 0
+        thead
+            tr
+                th 氏名
+                th 利用日数
+                th 勤務日数
+                th 勤務時間
+                th 欠勤日数
+                th 遅刻日数
+                th 早退日数
+        tbody
+            for item in items
+                tr
+                    td.text-center= item.person.name if item.person != None else ''
+                    td.text-right= item.usedate
+                    td.text-right= item.presented
+                    td.text-right= item.value
+                    td.text-right= item.absence
+                    td.text-right= item.late
+                    td.text-right= item.leave
+        tfoot
+            tr
+                td.text-center 合計
+                td.text-right= foot.usedate
+                td.text-right= foot.presented
+                td.text-right= foot.value
+                td.text-right= foot.absence
+                td.text-right= foot.late
+                td.text-right= foot.leave

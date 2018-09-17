@@ -23,11 +23,11 @@ ul {
     position: relative;
     box-sizing: border-box;
     page-break-after: always;
-    height: 297mm;
-    widows: 210mm;
-    padding-top: 32mm;
-    padding-left: 27mm;
-    padding-right: 27mm;
+    height: 295mm;
+    width: 205mm;
+    padding-top: 17mm;
+    padding-left: 17mm;
+    padding-right: 17mm;
 }
 
 @media screen {
@@ -38,6 +38,15 @@ ul {
         background: white;
         box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0,3);
         margin: 5mm auto;
+    }
+}
+
+@media print {
+    .page {
+        page-break-after: always;
+    }
+    .page:last-child {
+        page-break-after: auto;
     }
 }
 
@@ -54,19 +63,32 @@ ul {
     clear: both;
 }
 
+h1 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
 table,
 th,
 td {
-    border: 1px #264d99 solid;
+    border: 1px #000000 solid;
     border-collapse: collapse;
     padding: 1px 5px;
 }
 
-table th {
-    font-weight: bold;
+table {
+    width: 100%
 }
-table td {
+
+table thead th {
+    font-weight: bold;
+    border-bottom: 1px #000000 
+}
+table tbody td {
     text-align: right
 }
 
+table tfoot td {
+    font-weight: bold;
+}
 

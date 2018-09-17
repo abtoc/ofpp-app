@@ -1,6 +1,4 @@
 extends layout.pug
 
 block menu
-    //li: a(href="{{ url_for('performlogs.index',id=id,yymm=yymm) }}") 一覧
-    //li: a(href="{{ url_for('performlogs.report',id=id,yymm=yymm) }}" target="_blank") 印刷
-    //li: a(href="{{ url_for('performlogs.update',id=id,yymm=yymm) }}") 更新
+    li: a(href="{{ url_for('summarys.report', yymm=yymm) }}" target="_blank") 印刷

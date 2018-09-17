@@ -49,4 +49,13 @@ def index(yymm):
 @bp.route('/<yymm>/report')
 @login_required
 def report(yymm):
-    return render_template('summarys/report.pug')
+    today = date_x.yymm_dd(yymm, 1)
+    items = SummaryService.get_all(yymm)
+    foot = make_foot(items)
+    kw = dict(
+        yymm = yymm,
+        today = today.date,
+        items = items,
+        foot = foot
+    )
+    return render_template('summarys/report.pug', **kw)
