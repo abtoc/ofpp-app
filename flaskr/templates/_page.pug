@@ -1,0 +1,18 @@
+mixin pagination_widget(pagination, endpoint)
+    ul.pagination
+        if pagination.has_prev
+            li: a(href="{{ url_for(endpoint, page=pagination.prev_num) }}") &laquo;
+        else
+            li.disabled: a(href="#") &laquo;
+        for p in pagination.iter_pages()
+            if p
+                if p == pagination.page
+                    li.active: a(href="{{ url_for(endpoint, page = p) }}")= p
+                else
+                    li: a(href="{{ url_for(endpoint, page = p) }}")= p
+            else
+                li.disabled: a(href="#") &hellip;
+        if pagination.has_next
+            li: a(href="{{ url_for(endpoint, page=pagination.next_num) }}") &raquo;
+        else
+            li.disabled: a(href="#") &raquo;
