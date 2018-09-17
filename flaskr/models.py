@@ -233,10 +233,16 @@ class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
 # ユーザ
 class User(db.Model, UserMixin, ModelMixInID):
     __tablename__ = 'users'
+    __table_args__ = (
+        db.ForeignKeyConstraint(['person_id'], ['persons.id']),
+        {'mysql_engine': 'InnoDB'}
+    )
     id = db.Column(db.String(36), primary_key=True, default=_get_uuid)
     userid = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(128))
+    email = db.Column(db.String(128))                # パスワードリセット用
+    staff = db.Column(db.Boolean)                    # 職員
+    person_id = db.Column(db.String(36))             # 利用者ID
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
     def __repr__(self):
@@ -250,6 +256,17 @@ class User(db.Model, UserMixin, ModelMixInID):
         if not password:
             return False
         return check_password_hash(self.password, password)
+    def is_staff():
+        return self.staff
+    @property
+    def person(self):
+        if hasattr(self, '__person'):
+            return self.__person
+        if self.person_id is None:
+            self.__person = None
+        else:
+            self.__person = Person.query.get(self.person_id)
+        return self.__person
     @classmethod
     def auth(cls, userid, password):
         user = cls.query.filter(cls.userid==userid).first()

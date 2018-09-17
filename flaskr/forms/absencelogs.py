@@ -1,3 +1,4 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField
 from wtforms.fields.html5 import DateField
@@ -15,4 +16,11 @@ class AbsenseLogForm(FlaskForm):
             (p.id, p.name)
             for p in Person.query.filter(Person.staff == True, Person.enabled == True).order_by(Person.name)
         ]
+        obj = kwargs['obj']
+        if self.contact.data is None:
+            self.contact.data = obj.date
+        if obj.staff_id is None:
+            if current_user.person_id is not None:
+                self.staff_id.data = current_user.person_id
+
     

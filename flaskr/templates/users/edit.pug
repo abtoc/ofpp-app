@@ -1,10 +1,18 @@
 include _form.pug
-extends timerules/layout.pug
+extends users/layout.pug
 
 block title
     | ユーザ登録
 block content
     form(method="POST")
+        if id
+            .form-group
+                label ID
+                .form-control= id
+        if userid
+            .form-group
+                label ログインユーザID
+                .form-control= userid
         +generate_fields(form)
         .btn-group
             input.btn.btn-default(type="submit" value="保存")
