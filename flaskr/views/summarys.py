@@ -13,15 +13,7 @@ bp = Blueprint('summarys', __name__, url_prefix='/summarys')
 def default():
     return redirect(url_for('summarys.index', yymm=date.today().strftime('%Y%m')))
 
-@bp.route('/<yymm>')
-@login_required
-def index(yymm):
-    today = date_x.yymm_dd(yymm, 1)
-    first = today
-    last = first + relativedelta(months=1)
-    prev = first - relativedelta(months=1)
-    this = date_x()
-    items = SummaryService.get_all(yymm)
+def make_foot(items):
     Foot = namedtuple('foot', ('usedate', 'presented', 'value', 'absence', 'late', 'leave'))
     foot = Foot(
         sum([item.usedate for item in items if item.usedate is not None]),
@@ -31,6 +23,18 @@ def index(yymm):
         sum([item.late for item in items if item.late is not None]),
         sum([item.leave for item in items if item.leave is not None]),
     )
+    return foot
+
+@bp.route('/<yymm>')
+@login_required
+def index(yymm):
+    today = date_x.yymm_dd(yymm, 1)
+    first = today
+    last = first + relativedelta(months=1)
+    prev = first - relativedelta(months=1)
+    this = date_x()
+    items = SummaryService.get_all(yymm)
+    foot = make_foot(items)
     kw = dict(
         yymm = yymm,
         today = today.date,
@@ -41,3 +45,8 @@ def index(yymm):
         foot = foot
     )
     return render_template('summarys/index.pug', **kw)
+
+@bp.route('/<yymm>/report')
+@login_required
+def report(yymm):
+    return render_template('summarys/report.pug')

@@ -1,0 +1,72 @@
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    color: #000000;
+    /*font-family: "",""; */
+    font-size: 11pt;
+    font-weight: normal;
+    -webkit-print-color-adjust: extract;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.page {
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    page-break-after: always;
+    height: 297mm;
+    widows: 210mm;
+    padding-top: 32mm;
+    padding-left: 27mm;
+    padding-right: 27mm;
+}
+
+@media screen {
+    body {
+        background: #e0e0e0;
+    }
+    .page {
+        background: white;
+        box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0,3);
+        margin: 5mm auto;
+    }
+}
+
+.text-left {
+    text-align: left;
+}
+.text-center {
+    text-align: center;
+}
+.text-right {
+    text-align: right;
+}
+.clear-element {
+    clear: both;
+}
+
+table,
+th,
+td {
+    border: 1px #264d99 solid;
+    border-collapse: collapse;
+    padding: 1px 5px;
+}
+
+table th {
+    font-weight: bold;
+}
+table td {
+    text-align: right
+}
+
+
