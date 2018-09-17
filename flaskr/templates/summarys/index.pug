@@ -30,14 +30,14 @@ block content
                     td.text-center= item.person.name
                     td.text-center
                         a(href="{{ url_for('performlogs.index', id=item.id, yymm=yymm) }}")
-                            | {{ item.usedate }}
+                            | {{ item.usedate | do_not_show_none }}
                     td.text-center
                         a(href="{{ url_for('worklogs.index', id=item.id, yymm=yymm) }}")
-                            | {{ item.presented }}
-                    td.text-center= item.value
-                    td.text-center= item.absence
-                    td.text-center= item.late
-                    td.text-center= item.leave
+                            | {{ item.presented | do_not_show_none}}
+                    td.text-center= item.value | do_not_show_none
+                    td.text-center= item.absence | do_not_show_none
+                    td.text-center= item.late | do_not_show_none
+                    td.text-center= item.leave | do_not_show_none
         tfoot
             tr
                 td.text-center 合計

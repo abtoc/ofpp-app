@@ -14,7 +14,7 @@ class SummaryService:
             PerformLog.yymm == yymm,
             PerformLog.presented == True
         ).first()
-        self.usedate = q[0]
+        self.usedate = q[0] if q[0] is not None else 0
         # 勤務日数
         q = db.session.query(
             func.count(WorkLog.presented)
@@ -23,7 +23,7 @@ class SummaryService:
             WorkLog.yymm == yymm,
             WorkLog.presented == True
         ).first()
-        self.presented = q[0]
+        self.presented = q[0] if q[0] is not None else 0
         # 勤務時間
         q = db.session.query(
             func.sum(WorkLog.value)
@@ -32,7 +32,7 @@ class SummaryService:
             WorkLog.yymm == yymm,
             WorkLog.presented == True
         ).first()
-        self.value = q[0]
+        self.value = q[0] if q[0] is not None else 0
         # 欠勤
         q = db.session.query(
             func.count(WorkLog.absence)
@@ -41,7 +41,7 @@ class SummaryService:
             WorkLog.yymm == yymm,
             WorkLog.absence == True
         ).first()
-        self.absence = q[0]
+        self.absence = q[0] if q[0] is not None else 0
         # 遅刻
         q = db.session.query(
             func.count(WorkLog.late)
@@ -50,7 +50,7 @@ class SummaryService:
             WorkLog.yymm == yymm,
             WorkLog.late == True
         ).first()
-        self.late = q[0]
+        self.late = q[0] if q[0] is not None else 0
         # 早退
         q = db.session.query(
             func.count(WorkLog.leave)
@@ -59,7 +59,7 @@ class SummaryService:
             WorkLog.yymm == yymm,
             WorkLog.leave == True
         ).first()
-        self.leave = q[0]
+        self.leave = q[0] if q[0] is not None else 0
     @property
     def person(self):
         return Person.get(self.id)
