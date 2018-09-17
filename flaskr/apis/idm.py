@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify
 from flaskr.models import Person
 from flaskr.services.worklogs import WorkLogService
 from flaskr import app, db, auth, cache
+from flaskr.workers.worklogs import update_worklogs_value
+from flaskr.workers.performlogs import update_performlogs_enabled
 
 bp = Blueprint('api_idm', __name__, url_prefix='/api/idm')
 
@@ -35,6 +37,9 @@ def post(idm):
     worklog = WorkLogService.get_or_new(person.id, yymm, dd)
     try:
         worklog.update_api(now)
+        update_worklogs_value.delay(person.id, yymm, dd)
+        if not person.staff:
+            update_performlogs_enabled.delay(person.id, yymm)
     except Exception as e:
         db.session.rollback()
         app.logger.exception(e)

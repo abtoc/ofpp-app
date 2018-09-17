@@ -11,6 +11,7 @@ from flaskr import app, db
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
 from flaskr.workers.worklogs import update_worklogs_value
+from flaskr.workers.performlogs import update_performlogs_enabled
 
 bp = Blueprint('worklogs', __name__, url_prefix="/worklogs")
 
@@ -73,6 +74,9 @@ def edit(id, yymm, dd):
                 worklog.update_staff(form)
             else:
                 worklog.update_no_staff(form)
+            update_worklogs_value.delay(id, yymm, dd)
+            if not person.staff:
+                update_performlogs_enabled.delay(id, yymm)
             flash('勤怠の登録ができました', 'success')
             return redirect(url_for('worklogs.index', id=id, yymm=yymm))
         except Exception as e:

@@ -1,8 +1,6 @@
 from flask import url_for, abort
 from flaskr import db
 from flaskr.models import PerformLog
-from flaskr.workers.performlogs import update_performlogs_enabled
-from flaskr.workers.worklogs import update_worklogs_value
 from flaskr.models import AbsenceLog, WorkLog
 
 class PerformLogService(PerformLog):
@@ -46,7 +44,6 @@ class PerformLogService(PerformLog):
             db.session.add(absencelog)
         db.session.commit()
         self.update_to_worklog(worklog)
-        update_performlogs_enabled.delay(self.person_id, self.yymm)
     def sync_from_worklog(self, worklog):
         self.absence = False
         self.absence_add = False
@@ -65,7 +62,6 @@ class PerformLogService(PerformLog):
         worklog.presented = bool(worklog.work_in) or bool(worklog.work_out) or bool(worklog.value)
         db.session.add(worklog)
         db.session.commit()
-        update_worklogs_value.delay(worklog.person_id, worklog.yymm, worklog.dd)
     def delete(self):
         if bool(self.absencelog):
             db.session.delete(self.absencelog)
@@ -74,4 +70,3 @@ class PerformLogService(PerformLog):
             db.session.delete(worklog)
         db.session.delete(self)
         db.session.commit()
-        update_performlogs_enabled.delay(self.person_id, self.yymm)

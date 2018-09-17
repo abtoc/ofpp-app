@@ -11,6 +11,7 @@ from flaskr.utils.datetime import date_x
 from flaskr.reports.performlogs import PerformLogReport
 from flaskr.models import Person
 from flaskr.workers.performlogs import update_performlogs_enabled
+from flaskr.workers.worklogs import update_worklogs_value
 
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
@@ -77,6 +78,8 @@ def edit(id, yymm, dd):
     if form.validate_on_submit():
         try:
             performlog.update(form)
+            update_worklogs_value.delay(id, yymm, dd)
+            update_performlogs_enabled.delay(id, yymm)
             flash('実績の登録ができました', 'success')
             return redirect(url_for('performlogs.index', id=id, yymm=yymm))
         except Exception as e:
@@ -107,6 +110,7 @@ def destroy(id, yymm, dd):
             return redirect(url_for('performlogs.index', id=id, yymm=yymm))
     try:
         performlog.delete()
+        update_performlogs_enabled.delay(id, yymm)
         flash('実績の削除ができました', 'success')
     except Exception as e:
         db.session.rollback()
