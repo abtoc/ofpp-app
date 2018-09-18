@@ -23,11 +23,11 @@ block content
                     td= item.number if item.number else ''
                     td= item.usestart if item.usestart else ''
                     if item.is_supply_over()
-                        td(bgcolor="#f8f8f8")= item.supply_out if item.supply_out else ''
+                        td.bg-danger= item.supply_out if item.supply_out else ''
                     else
                         td= item.supply_out if item.supply_out else ''
                     if item.is_apply_over()
-                        td(bgcolor="#f8f8f8")= item.apply_out if item.apply_out else ''
+                        td.bg-danger= item.apply_out if item.apply_out else ''
                     else
                         td= item.apply_out if item.apply_out else ''
                     td: .hidden-print= item.create_at | strftime('%Y/%m/%d %H:%M')
