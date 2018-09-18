@@ -7,29 +7,41 @@ block content
         thead
             tr
                 th
-                th 名前
-                th 受給者証番号
-                th 利用開始日
-                th 支給期間
-                th 適用期間
-                th:.hidden-print 作成日
-                th:.hidden-print 更新日
+                th.text-center 名前
+                th.text-center 受給者証番号
+                th.text-center 利用開始日
+                th.text-center 支給期間
+                th.text-center 適用期間
+                th.text-center:.hidden-print 作成日
+                th.text-center:.hidden-print 更新日
                 th
         tbody
             for item in items
                 tr
                     td= '○' if item.person.enabled else ''
-                    td= item.person.display_or_name
-                    td= item.number if item.number else ''
-                    td= item.usestart if item.usestart else ''
+                    td.text-center= item.person.display_or_name
+                    td.text-center= item.number if item.number else ''
+                    td.text-center= item.usestart if item.usestart else ''
                     if item.is_supply_over()
-                        td.bg-danger= item.supply_out if item.supply_out else ''
+                        td.text-center.bg-danger
+                            | {{ item.supply_in if item.supply_in else ''　}}
+                            | 〜
+                            | {{ item.supply_out if item.supply_out else '' }}
                     else
-                        td= item.supply_out if item.supply_out else ''
+                        td.text-center
+                            | {{ item.supply_in if item.supply_in else '' }}
+                            | 〜
+                            | {{ item.supply_out if item.supply_out else '' }}
                     if item.is_apply_over()
-                        td.bg-danger= item.apply_out if item.apply_out else ''
+                        td.text-center.bg-danger
+                            | {{ item.apply_in if item.apply_in else '' }}
+                            | 〜
+                            | {{ item.apply_out if item.apply_out else '' }}
                     else
-                        td= item.apply_out if item.apply_out else ''
+                        td.text-center
+                            | {{ item.apply_in if item.apply_in else '' }}
+                            | 〜
+                            | {{ item.apply_out if item.apply_out else '' }}
                     td: .hidden-print= item.create_at | strftime('%Y/%m/%d %H:%M')
                     td: .hidden-print= item.update_at | strftime('%Y/%m/%d %H:%M') 
                     td: .text-right: .hidden-print: .btn-group
