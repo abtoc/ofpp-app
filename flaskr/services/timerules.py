@@ -13,11 +13,11 @@ class TimeRuleService:
         w_in = rules['core']['start']
         w_out = rules['core']['end']
         for i in rules['times']:
-            if i['in'] and (i['start'] <= work_in) and (work_in < i['end']):
+            if i['in'] and (i['start'] <= work_in < i['end']):
                 w_in = i['value']
                 break
         for i in rules['times']:
-            if i['out'] and (i['start'] <= work_out) and (work_out < i['end']):
+            if i['out'] and (i['start'] <= work_out < i['end']):
                 w_out = i['value']
                 break
         value = w_out - w_in
