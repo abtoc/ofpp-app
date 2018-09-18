@@ -7,6 +7,8 @@ class UserNewForm(FlaskForm):
     userid = StringField('ログインユーザID', validators=[Required(message='必須項目です')])
     password = PasswordField('パスワード', validators=[Required(message='必須項目です')])
     confirm = PasswordField('パスワード再入力', validators=[EqualTo('password',message='パスワードが一致しません')])
+    enabled = BooleanField('有効化', default='checked')
+    admin = BooleanField('Admin権限')
     staff = BooleanField('職員')
     person_id = SelectField('対応利用者（又は対応職員）')
     email = StringField('パスワードリセット用E-Mailアドレス', validators=[Email(message='メールアドレスを入れてください'), Optional()])
@@ -23,6 +25,8 @@ class UserNewForm(FlaskForm):
             ValidationError('同一ユーザIDが指定されています')
 
 class UserEditForm(FlaskForm):
+    enabled = BooleanField('有効化', default='checked')
+    admin = BooleanField('Admin権限')
     staff = BooleanField('職員')
     person_id = SelectField('対応利用者（又は対応職員）')
     email = StringField('パスワードリセット用E-Mailアドレス', validators=[Email(message='メールアドレスを入れてください'), Optional()])

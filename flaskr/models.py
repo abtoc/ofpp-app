@@ -240,6 +240,8 @@ class User(db.Model, UserMixin, ModelMixInID):
     id = db.Column(db.String(36), primary_key=True, default=_get_uuid)
     userid = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
+    enabled = db.Column(db.Boolean)                  # 有効化
+    admin = db.Column(db.Boolean)                    # admin権限
     email = db.Column(db.String(128))                # パスワードリセット用
     staff = db.Column(db.Boolean)                    # 職員
     person_id = db.Column(db.String(36))             # 利用者ID
@@ -256,7 +258,11 @@ class User(db.Model, UserMixin, ModelMixInID):
         if not password:
             return False
         return check_password_hash(self.password, password)
-    def is_staff():
+    def is_enabled(self):
+        return self.enabled
+    def is_admin(self):
+        return self.enabled
+    def is_staff(self):
         return self.staff
     @property
     def person(self):
@@ -272,6 +278,8 @@ class User(db.Model, UserMixin, ModelMixInID):
         user = cls.query.filter(cls.userid==userid).first()
         if user is None:
             return None, False
+        if not user.enabled:
+            return user, False
         return user, user.check_password(password)
 
 # 時間ルールテーブル
