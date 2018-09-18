@@ -12,6 +12,7 @@ def add_user(userid, password):
     print('ユーザ"{}"追加'.format(userid))
     user = User(userid=userid)
     user.set_password(password)
+    user.staff = True
     db.session.add(user)
     db.session.commit()
 
