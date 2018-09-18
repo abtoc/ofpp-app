@@ -25,7 +25,7 @@ class PersonForm(FlaskForm):
     def validate_idm(form, field):
         if len(field.data) == 0:
             return
-        check = Person.query.filter(Person.idm == field.data, id != form.person_id.data).first()
+        check = Person.query.filter(Person.idm == field.data, Person.id != form.person_id.data).first()
         if check:
             raise ValidationError('同一IDMが指定されいています')
            
