@@ -42,8 +42,8 @@ class PerformLogService(PerformLog):
         elif (not bool(absencelog)) and self.absence_add:
             absencelog = AbsenceLog(person_id=self.person_id, yymm=self.yymm, dd=self.dd)
             db.session.add(absencelog)
+        self.sync_to_worklog(worklog)
         db.session.commit()
-        self.update_to_worklog(worklog)
     def sync_from_worklog(self, worklog):
         self.absence = False
         self.absence_add = False
@@ -55,13 +55,12 @@ class PerformLogService(PerformLog):
         absencelog = AbsenceLog.query.get((self.person_id, self.yymm, self.dd))
         if bool(absencelog):
             db.session.delete(absencelog)
-    def update_to_worklog(self, worklog):
+    def sync_to_worklog(self, worklog):
         worklog.work_in = self.work_in
         worklog.work_out = self.work_out
         worklog.absence = self.absence
         worklog.presented = bool(worklog.work_in) or bool(worklog.work_out) or bool(worklog.value)
         db.session.add(worklog)
-        db.session.commit()
     def delete(self):
         if bool(self.absencelog):
             db.session.delete(self.absencelog)
