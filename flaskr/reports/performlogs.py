@@ -95,7 +95,7 @@ class PerformLogReport(Report):
             item['medical'] = log.medical
             item['experience'] = log.experience
             item['outside'] = 1 if bool(log.outside) else ''
-            item['outemp'] = 1 if bool(log.outside) else ''
+            item['outemp'] = 1 if bool(log.outemp) else ''
             foot['pickup'] += 1 if bool(log.pickup_in) else 0
             foot['pickup'] += 1 if bool(log.pickup_out) else 0
             foot['visit'] += 1 if bool(log.visit) else 0
