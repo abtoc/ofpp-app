@@ -11,7 +11,7 @@ def check_absence_add(form, field):
 class PerformLogFormIDM(FlaskForm):
     value_ = HiddenField()
     work_in = StringField('開始時間', validators=[Optional(), WorkTime()])
-    work_out = StringField('開始時間', validators=[Optional(), WorkTime()])
+    work_out = StringField('終了時間', validators=[Optional(), WorkTime()])
     absence = BooleanField('欠席')
     absence_add = BooleanField('欠席加算', validators=[check_absence_add])
     pickup_in = BooleanField('送迎加算（往路）')
@@ -43,6 +43,13 @@ class PerformLogFormIDM(FlaskForm):
             return
         if bool(form.work_in.data) or bool(form.work_out.data) or bool(form.value_.data):
             raise ValidationError('勤務時間が入力されているため、欠席にはできません')
+    def validate_work_out(form, field):
+        if not bool(form.work_in.data):
+            return
+        if not bool(form.work_out.data):
+            return
+        if form.work_in.data > form.work_out.data:
+            raise ValidationError('終了時刻は開始時刻より後の時刻にしてください')
 
 class PerformLogForm(FlaskForm):
     work_in_ = HiddenField()

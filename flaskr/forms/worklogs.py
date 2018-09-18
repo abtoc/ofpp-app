@@ -40,3 +40,10 @@ class WorkLogFormStaff(FlaskForm):
             return
         if bool(form.work_in) or bool(form.work_out) or bool(form.value):
             raise ValidationError('勤務時間が設定されているため欠勤にチェックできません')
+    def validate_work_out(form, field):
+        if not bool(form.work_in.data):
+            return
+        if not bool(form.work_out.data):
+            return
+        if form.work_in.data > form.work_out.data:
+            raise ValidationError('終了時刻は開始時刻より後の時刻にしてください')
