@@ -5,6 +5,7 @@ from flask_login import login_required
 from flaskr import app, cache
 from flaskr.models import Person
 from flaskr.utils.datetime import date_x
+from flaskr.utils.roles import check_idm
 from flaskr.services.worklogs import WorkLogService
 
 def _get_caption(person, date):
@@ -61,7 +62,7 @@ def index():
     for person in persons:
         item = Item(
             person.display_or_name,
-            person.id == cache.get('person.id'),
+            check_idm(person),
             person.staff,
             _get_caption(person, today.date),
             _get_url(person, today.date),

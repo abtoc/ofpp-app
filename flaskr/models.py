@@ -261,7 +261,7 @@ class User(db.Model, UserMixin, ModelMixInID):
     def is_enabled(self):
         return self.enabled
     def is_admin(self):
-        return self.enabled
+        return self.admin
     def is_staff(self):
         return self.staff
     @property

@@ -1,19 +1,20 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
-from flask_login import login_required
+from flask_login import login_required,current_user
 from flaskr import app, db
 from flaskr.models import User
 from flaskr.forms.users import UserNewForm, UserEditForm
+from flaskr.utils.roles import login_required_admin
 
 bp = Blueprint('users', __name__, url_prefix="/users")
 
 @bp.route('/')
-@login_required
+@login_required_admin
 def index():
     items = User.query.order_by(User.userid).all()
     return render_template('users/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
-@login_required
+@login_required_admin
 def create():
     form = UserNewForm()
     if form.validate_on_submit():
@@ -32,7 +33,7 @@ def create():
     return render_template('users/edit.pug', form=form)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
-@login_required
+@login_required_admin
 def edit(id):
     user = User.get_or_404(id)
     form = UserEditForm(obj=user)
@@ -56,7 +57,7 @@ def edit(id):
 
 
 @bp.route('/<id>/destroy')
-@login_required
+@login_required_admin
 def destroy(id):
     user = User.query.filter(User.id == id).first()
     if user is None:

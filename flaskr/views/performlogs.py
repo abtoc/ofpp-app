@@ -8,6 +8,7 @@ from flaskr.services.performlogs import PerformLogService
 from flaskr.services.worklogs import WorkLogService
 from flaskr import app, db, cache
 from flaskr.utils.datetime import date_x
+from flaskr.utils.roles import check_idm
 from flaskr.reports.performlogs import PerformLogReport
 from flaskr.models import Person
 from flaskr.workers.performlogs import update_performlogs_enabled
@@ -71,7 +72,7 @@ def edit(id, yymm, dd):
         flash('職員はこの画面はサポートしておりません', 'danger')
         return redirect(url_for('index'))
     performlog = PerformLogService.get_or_new(id, yymm, dd)
-    if cache.get('person.idm') == person.idm:
+    if check_idm(person):
         form = PerformLogFormIDM(obj=performlog)
     else:
         form = PerformLogForm(obj=performlog)
@@ -104,7 +105,7 @@ def destroy(id, yymm, dd):
         return redirect(url_for('index'))
     performlog = PerformLogService.get_or_404((id, yymm, dd))
     worklog = WorkLogService.get_or_404((id, yymm, dd))
-    if (cache.get('person.idm') != person.idm):
+    if not check_idm(person):
         if bool(performlog.work_in) or bool(performlog.work_out) or bool(worklog.value):
             flash('利用者のICカードをタッチしてください', 'danger')
             return redirect(url_for('performlogs.index', id=id, yymm=yymm))
