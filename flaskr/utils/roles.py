@@ -3,8 +3,9 @@ from functools import wraps
 from flaskr import lm, cache
 
 def check_idm(person):
-    if current_user.is_admin():
-        return True
+    #臨時対応とする
+    #if current_user.is_admin():
+    #    return True
     return person.idm == cache.get('person.idm')
 
 def login_required_admin(func):
