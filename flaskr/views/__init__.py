@@ -1,10 +1,10 @@
 from collections import namedtuple
+from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import render_template, url_for
 from flask_login import login_required
 from flaskr import app, cache
 from flaskr.models import Person
-from flaskr.utils.datetime import date_x
 from flaskr.utils.roles import check_idm
 from flaskr.services.worklogs import WorkLogService
 
@@ -36,7 +36,7 @@ def _get_url(person, date):
 @app.route('/')
 @login_required
 def index():
-    today = date_x()
+    today = date.today()
     yesterday1 = today - relativedelta(days=1)
     yesterday2 = today - relativedelta(days=2)
     prev = today - relativedelta(months=1)
@@ -64,18 +64,18 @@ def index():
             person.display_or_name,
             check_idm(person),
             person.staff,
-            _get_caption(person, today.date),
-            _get_url(person, today.date),
-            _get_caption(person, yesterday1.date),
-            _get_url(person, yesterday1.date),
-            _get_caption(person, yesterday2.date),
-            _get_url(person, yesterday2.date),
-            url_for('performlogs.index', id=person.id, yymm=today.date.strftime('%Y%m')),
-            url_for('performlogs.report', id=person.id, yymm=today.date.strftime('%Y%m')),
-            url_for('performlogs.report', id=person.id, yymm=prev.date.strftime('%Y%m')),
-            url_for('worklogs.index', id=person.id, yymm=today.date.strftime('%Y%m')),
-            url_for('worklogs.report', id=person.id, yymm=today.date.strftime('%Y%m')),
-            url_for('worklogs.report', id=person.id, yymm=prev.date.strftime('%Y%m')),
+            _get_caption(person, today),
+            _get_url(person, today),
+            _get_caption(person, yesterday1),
+            _get_url(person, yesterday1),
+            _get_caption(person, yesterday2),
+            _get_url(person, yesterday2),
+            url_for('performlogs.index', id=person.id, yymm=today.strftime('%Y%m')),
+            url_for('performlogs.report', id=person.id, yymm=today.strftime('%Y%m')),
+            url_for('performlogs.report', id=person.id, yymm=prev.strftime('%Y%m')),
+            url_for('worklogs.index', id=person.id, yymm=today.strftime('%Y%m')),
+            url_for('worklogs.report', id=person.id, yymm=today.strftime('%Y%m')),
+            url_for('worklogs.report', id=person.id, yymm=prev.strftime('%Y%m')),
         )
         items.append(item)
     return render_template('index.pug', items=items)
