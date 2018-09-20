@@ -1,3 +1,4 @@
+from flask import request
 from flask_login import current_user
 from functools import wraps
 from flaskr import lm, cache
@@ -28,3 +29,16 @@ def login_required_staff(func):
         return func(*args, **kwargs)
     return decoreted_view
 
+def login_required_person(func):
+    @wraps(func)
+    def decoreted_view(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return lm.unauthorized()
+        if current_user.is_admin():
+            return func(*args, **kwargs)
+        if current_user.is_staff():
+            return func(*args, **kwargs)
+        if current_user.person_id == request.view_args.get('id'):
+            return func(*args, **kwargs)
+        return lm.unauthorized()
+    return decoreted_view

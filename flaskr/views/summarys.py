@@ -2,14 +2,14 @@ from collections import namedtuple
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, redirect, render_template, url_for
-from flask_login import login_required
 from flaskr.services.summarys import SummaryService
 from flaskr.utils.datetime import date_x
+from flaskr.utils.roles import login_required_staff
 
 bp = Blueprint('summarys', __name__, url_prefix='/summarys')
 
 @bp.route('/')
-@login_required
+@login_required_staff
 def default():
     return redirect(url_for('summarys.index', yymm=date.today().strftime('%Y%m')))
 
@@ -27,7 +27,7 @@ def make_foot(items):
     return foot
 
 @bp.route('/<yymm>')
-@login_required
+@login_required_staff
 def index(yymm):
     today = date_x.yymm_dd(yymm, 1)
     first = today
@@ -48,7 +48,7 @@ def index(yymm):
     return render_template('summarys/index.pug', **kw)
 
 @bp.route('/<yymm>/report')
-@login_required
+@login_required_staff
 def report(yymm):
     today = date_x.yymm_dd(yymm, 1)
     items = SummaryService.get_all(yymm)

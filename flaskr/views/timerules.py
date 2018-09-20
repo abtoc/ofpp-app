@@ -1,19 +1,19 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
-from flask_login import login_required
 from flaskr.forms.timerules import TimeRuleForm
 from flaskr.models import TimeRule
 from flaskr import app, db
+from flaskr.utils.roles import login_required_staff
 
 bp = Blueprint('timerules', __name__, url_prefix='/timerules')
 
 @bp.route('/')
-@login_required
+@login_required_staff
 def index():
     items = TimeRule.query.order_by(TimeRule.caption).all()
     return render_template('timerules/index.pug', items=items)
 
 @bp.route('/create', methods=['GET', 'POST'])
-@login_required
+@login_required_staff
 def create():
     form = TimeRuleForm()
     if form.validate_on_submit():
@@ -31,7 +31,7 @@ def create():
     return render_template('timerules/edit.pug', form=form)
 
 @bp.route('/<id>/edit', methods=['GET', 'POST'])
-@login_required
+@login_required_staff
 def edit(id):
     item = TimeRule.get_or_404(id)
     form = TimeRuleForm(obj=item)
@@ -49,7 +49,7 @@ def edit(id):
     return render_template('timerules/edit.pug', id=id, form=form)
 
 @bp.route('/<id>/destroy')
-@login_required
+@login_required_staff
 def destroy(id):
     item = TimeRule.get_or_404(id)
     db.session.delete(item)

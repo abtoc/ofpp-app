@@ -2,7 +2,7 @@ from collections import namedtuple
 from datetime import date
 from dateutil.relativedelta import relativedelta
 from flask import render_template, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flaskr import app, cache
 from flaskr.models import Person
 from flaskr.utils.roles import check_idm
@@ -60,7 +60,10 @@ def index():
            'url_worklogs_report',
            'url_worklogs_report1'
         ))
-    persons = Person.query.filter(Person.enabled==True).order_by(Person.staff, Person.name).all()
+    if current_user.is_staff():
+        persons = Person.query.filter(Person.enabled==True).order_by(Person.staff, Person.name).all()
+    else:
+        persons = (Person.get_or_404(current_user.person_id),)
     items = []
     for person in persons:
         item = Item(

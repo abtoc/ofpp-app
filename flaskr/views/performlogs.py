@@ -2,7 +2,6 @@ from dateutil.relativedelta import relativedelta
 from collections import namedtuple
 from io import BytesIO
 from flask import Blueprint, render_template, redirect, make_response, url_for, flash, abort
-from flask_login import login_required
 from flaskr.forms.performlogs import PerformLogFormIDM, PerformLogForm
 from flaskr.services.performlogs import PerformLogService
 from flaskr.services.worklogs import WorkLogService
@@ -13,11 +12,11 @@ from flaskr.reports.performlogs import PerformLogReport
 from flaskr.models import Person
 from flaskr.workers.performlogs import update_performlogs_enabled
 from flaskr.workers.worklogs import update_worklogs_value
-
+from flaskr.utils.roles import login_required_staff, login_required_person
 bp = Blueprint('performlogs', __name__, url_prefix="/performlogs")
 
 @bp.route('/<id>/<yymm>')
-@login_required
+@login_required_person
 def index(id, yymm):
     person = Person.get_or_404(id)
     if person.staff:
@@ -61,7 +60,7 @@ def index(id, yymm):
     return render_template('performlogs/index.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/edit', methods=['GET', 'POST'])
-@login_required
+@login_required_staff
 def edit(id, yymm, dd):
     try:
         date_x.yymm_dd(yymm, dd)
@@ -97,7 +96,7 @@ def edit(id, yymm, dd):
     return render_template('performlogs/edit.pug', **kw)
 
 @bp.route('/<id>/<yymm>/<dd>/destroy')
-@login_required
+@login_required_staff
 def destroy(id, yymm, dd):
     person = Person.get_or_404(id)
     if person.staff:
@@ -120,7 +119,7 @@ def destroy(id, yymm, dd):
     return redirect(url_for('performlogs.index', id=id, yymm=yymm))
 
 @bp.route('/<id>/<yymm>/report')
-@login_required
+@login_required_person
 def report(id, yymm):
     with BytesIO() as output:
         pdf = PerformLogReport(id, yymm)
@@ -130,7 +129,7 @@ def report(id, yymm):
     return response
 
 @bp.route('/<id>/<yymm>/update')
-@login_required
+@login_required_staff
 def update(id, yymm):
     update_performlogs_enabled.delay(id, yymm)
     return redirect(url_for('performlogs.index',id=id, yymm=yymm))
