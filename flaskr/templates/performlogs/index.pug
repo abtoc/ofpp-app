@@ -20,7 +20,7 @@ block content
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=prev) }}") << 前月
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=this) }}") 今月
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=next) }}") 翌月 >>
-    table.table.table-hover
+    table.table.table-bordered.table-condensed.table-hover
         thead
             tr
                 th.text-center 日付
