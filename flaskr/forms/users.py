@@ -12,6 +12,7 @@ class UserNewForm(FlaskForm):
     staff = BooleanField('職員')
     person_id = SelectField('対応利用者（又は対応職員）')
     email = StringField('パスワードリセット用E-Mailアドレス', validators=[Email(message='メールアドレスを入れてください'), Optional()])
+    remarks = StringField('備考')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.person_id.choices = [(None, '無し')] + [(ps.id, ps.name)
@@ -30,6 +31,7 @@ class UserEditForm(FlaskForm):
     staff = BooleanField('職員')
     person_id = SelectField('対応利用者（又は対応職員）')
     email = StringField('パスワードリセット用E-Mailアドレス', validators=[Email(message='メールアドレスを入れてください'), Optional()])
+    remarks = StringField('備考')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.person_id.choices = [(None, '無し')] + [(ps.id, ps.name)

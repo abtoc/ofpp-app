@@ -245,6 +245,7 @@ class User(db.Model, UserMixin, ModelMixInID):
     email = db.Column(db.String(128))                # パスワードリセット用
     staff = db.Column(db.Boolean)                    # 職員
     person_id = db.Column(db.String(36))             # 利用者ID
+    remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
     def __repr__(self):
