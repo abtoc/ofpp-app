@@ -39,6 +39,7 @@ def index():
     today = date.today()
     yesterday1 = today - relativedelta(days=1)
     yesterday2 = today - relativedelta(days=2)
+    yesterday3 = today - relativedelta(days=3)
     prev = today - relativedelta(months=1)
     Item = namedtuple('Item', (
            'name',
@@ -50,6 +51,8 @@ def index():
            'url1',
            'caption2',
            'url2',
+           'caption3',
+           'url3',
            'url_performlogs',
            'utl_performlogs_report',
            'url_performlogs_report1',
@@ -70,6 +73,8 @@ def index():
             _get_url(person, yesterday1),
             _get_caption(person, yesterday2),
             _get_url(person, yesterday2),
+            _get_caption(person, yesterday3),
+            _get_url(person, yesterday3),
             url_for('performlogs.index', id=person.id, yymm=today.strftime('%Y%m')),
             url_for('performlogs.report', id=person.id, yymm=today.strftime('%Y%m')),
             url_for('performlogs.report', id=person.id, yymm=prev.strftime('%Y%m')),

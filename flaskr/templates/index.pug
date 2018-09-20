@@ -10,6 +10,7 @@ block content
                 th 今日
                 th 昨日
                 th 一昨日
+                th 一昨々日
                 th
         tbody
             for item in items
@@ -21,6 +22,7 @@ block content
                     td: a(href="{{ item.url }}") {{ item.caption }}
                     td: a(href="{{ item.url1 }}") {{ item.caption1 }}
                     td: a(href="{{ item.url2 }}") {{ item.caption2 }}
+                    td: a(href="{{ item.url3 }}") {{ item.caption3 }}
                     td: .text-right
                         if not item.staff:
                             .row: .btn-group
