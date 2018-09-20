@@ -29,6 +29,8 @@ db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'auth.login'
+lm.login_message = 'ユーザID、パスワードを入力してください'
+lm.login_message_category = 'warning'
 
 auth = HTTPBasicAuth()
 
