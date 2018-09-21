@@ -4,11 +4,11 @@ block title
   | 月次集計 - ペタペタシステム
 block content
     .row
-        .col-xs-2
+        .col-md-2.col-xs-2
             b= today | strftime('%Y年%m月')
-        .col-xs-7
+        .col-md-6.col-xs-7
             b 月次集計表
-        .col-xs-3
+        .col-md-4.col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('summarys.index', yymm=prev) }}") << 前月

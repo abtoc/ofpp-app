@@ -10,3 +10,6 @@
 .pager {
     margin: 0px;
 }
+.container {
+    min-width: 970px;
+}

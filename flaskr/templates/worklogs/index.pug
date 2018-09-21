@@ -2,18 +2,32 @@ extends worklogs/layout.pug
 
 block title
   | 出勤簿 - ペタペタシステム
+block head
+    style.
+        table th.date {
+            width: 42px;
+        }
+        table th.work {
+            width: 72px;
+        }
+        table th.absence {
+            width: 42px;
+        }
+        table th.button {
+            width: 102px;
+        }
 block content
     .row
-        .col-xs-2
+        .col-md-2.col-xs-2
             b= today | strftime('%Y年%m月')
-        .col-xs-3
+        .col-md-3.col-xs-3
             b 「 {{ name }} 」
             b 出勤簿
-        .col-xs-4
+        .col-md-3.col-xs-4
             .hidden-print
                 if not staff
                     a(href="{{ url_for('performlogs.index', id=id, yymm=yymm) }}") 実績記録
-        .col-xs-3
+        .col-md-4.col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('worklogs.index', id=id, yymm=prev) }}") << 前月
@@ -22,18 +36,18 @@ block content
     table.table.table-bordered.table-condensed.table-hover
         thead
             tr
-                th.text-center 日付
-                th.text-center 曜日
-                th.text-center 開始時刻
-                th.text-center 終了時刻
-                th.text-center 勤務時間
-                th.text-center 休憩時間
-                th.text-center 残業時間
-                th.text-center 欠勤
-                th.text-center 遅刻
-                th.text-center 早退
+                th.date.text-center 日付
+                th.date.text-center 曜日
+                th.work.text-center 開始時刻
+                th.work.text-center 終了時刻
+                th.work.text-center 勤務時間
+                th.work.text-center 休憩時間
+                th.work.text-center 残業時間
+                th.absence.text-center 欠勤
+                th.absence.text-center 遅刻
+                th.absence.text-center 早退
                 th 備考
-                th
+                th.button
         tbody
             for item in items
                 tr
@@ -55,7 +69,7 @@ block content
                     td.text-center= '○' if item.late else ''
                     td.text-center= '○' if item.leave else ''
                     td= item.remarks | do_not_show_none
-                    td: .hidden-print: .text-right: .hidden-print: .btn-group
+                    td: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
                         a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
         tfoot

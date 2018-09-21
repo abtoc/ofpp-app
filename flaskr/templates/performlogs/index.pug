@@ -2,19 +2,62 @@ extends performlogs/layout.pug
 
 block title
   | 実績記録表 - ペタペタシステム
+block head
+    style.
+        table th.date {
+            width: 52px;
+            font-size: 11px;
+        }
+        table th.week {
+            width: 34px;
+            font-size: 11px;
+        }
+        table th.stat {
+            width: 78px;
+            font-size: 11px;
+        }
+        table th.work {
+            width: 56px;
+            font-size: 11px;
+        }
+        table th.pickup {
+            width: 48px;
+            font-size: 10px;
+        }
+        table th.visit {
+            width: 56px;
+            font-size: 11px;
+        }
+        table th.meal {
+            width: 34px;
+            font-size: 11px;
+        }
+        table th.outside {
+            width: 62px;
+            font-size: 10px;
+        }
+        table th.remarks {
+            font-size: 11px;
+        }
+        table th.button {
+            width: 102px;
+        }
+        table th.usecount {
+            font-size: 11px;
+        }
 block content
     .row
-        .col-xs-2
+        .col-md-2.col-xs-2
             b= today | strftime('%Y年%m月')
-        .col-xs-3
+        .col-md-3.col-xs-3
             b 「 {{ name }} 」
             b 実績記録表
-        .col-xs-4
+        .col-md-3.col-xs-4
             .hidden-print
                 a(href="{{ url_for('worklogs.index', id=id, yymm=yymm) }}") 勤怠記録
                 span &nbsp; &nbsp;
                 a(href="{{ url_for('absencelogs.index', yymm=yymm) }}") 欠席時対応記録
-        .col-xs-3
+        .col-md-4.col-xs-3
             nav(aria-label="ページャー")
                 ul.pager.hidden-print
                     li: a(href="{{ url_for('performlogs.index', id=id, yymm=prev) }}") << 前月
@@ -23,21 +66,21 @@ block content
     table.table.table-bordered.table-condensed.table-hover
         thead
             tr
-                th.text-center 日付
-                th.text-center 曜日
-                th.text-center 状態
-                th.text-center 開始時刻
-                th.text-center 終了時刻
-                th.text-center 送迎(往)
-                th.text-center 送迎(復)
-                th.text-center 訪問支援
-                th.text-center 食事
-                th.text-center 医療
-                th.text-center 体験
-                th.text-center 施設外就労
-                th.text-center 施設外支援
-                th 備考
-                th
+                th.date.text-center 日付
+                th.week.text-center 曜日
+                th.stat.text-center 状態
+                th.work.text-center 開始時刻
+                th.work.text-center 終了時刻
+                th.pickup.text-center 送迎(往)
+                th.pickup.text-center 送迎(復)
+                th.visit.text-center 訪問支援
+                th.meal.text-center 食事
+                th.meal.text-center 医療
+                th.meal.text-center 体験
+                th.outside.text-center 施設外就労
+                th.outside.text-center 施設外支援
+                th.remarks 備考
+                th.button
         tbody
             for item in items
                 tr
@@ -73,7 +116,7 @@ block content
                     td.text-center= '○' if item.outemp else ''
                     td.text-center= '○' if item.outside else ''
                     td= item.remarks | do_not_show_none
-                    td: .hidden-print: .text-right: .hidden-print: .btn-group
+                    td: .hidden-print: .btn-group
                         a.btn-sm.btn-default(href="{{ item.url_edit }}") 編集
                         a.btn-sm.btn-default.confirm(href="{{ item.url_delete }}") 削除
         tfoot
@@ -90,14 +133,14 @@ block content
                 td(colspan="2")
             tr
                 th(colspan="3")
-                th(colspan="2").text-center 利用回数
-                th(colspan="2").text-center 送迎
-                th.text-center 訪問支援
-                th.text-center 食事
-                th.text-center 医療
-                th.text-center 体験
-                th.text-center 施設外就労
-                th.text-center 施設外支援
+                th(colspan="2").usecount.text-center 利用回数
+                th(colspan="2").pickup.text-center 送迎
+                th.visit.text-center 訪問支援
+                th.meal.text-center 食事
+                th.meal.text-center 医療
+                th.meal.text-center 体験
+                th.outside.text-center 施設外就労
+                th.outside.text-center 施設外支援
                 th(colspan="2")
     script.
         $(function(){

@@ -10,6 +10,7 @@ html(lang="ja")
         link(rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}")
         script(src="{{ url_for('static', filename='js/jquery.min.js') }}")
         script(src="{{ url_for('static', filename='js/bootstrap.min.js') }}")
+        block head
     body
         nav.navbar.navbar-default
             .container-fluid
