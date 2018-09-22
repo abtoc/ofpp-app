@@ -13,3 +13,6 @@
 .container {
     min-width: 970px;
 }
+body {
+    padding-top: 70px;
+}
