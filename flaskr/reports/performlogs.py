@@ -3,6 +3,8 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, portrait
 from reportlab.lib.units import mm
 from reportlab.platypus import Table
+from sqlalchemy import func
+from flaskr import db
 from flaskr.reports import Report
 from flaskr.services.performlogs import PerformLogService
 from flaskr.helpers import weeka
@@ -17,6 +19,10 @@ class PerformLogReport(Report):
         self.yymm = yymm
         self.yy = int(yymm[:4])
         self.mm = int(yymm[4:])
+        if self.mm <= 3:
+            self.yymm1 = str(self.yy - 1) + '04'
+        else:
+            self.yymm1 = str(self.yy) + '04'
     def __call__(self, output):
         psize = portrait(A4)
         super().__call__(output, psize)
@@ -108,6 +114,15 @@ class PerformLogReport(Report):
                 foot['usestart'] += 1 if (log.date >= self.usestart) and (log.date <= self.usestart30d) else 0
             item['remarks'] = log.remarks
             items.append(item)
+        q = db.session.query(
+            func.count(PerformLog.outside)
+        ).filter(
+            PerformLog.person_id == self.id,
+            PerformLog.yymm >= self.yymm1,
+            PerformLog.yymm <= self.yymm,
+            PerformLog.outside == True
+        ).first()
+        foot['outside_sum'] = q[0] if bool(q) else 0
         return items, foot
     def make_page(self, p, head, items, foot):
         xmargin = 15.0 * mm
@@ -218,7 +233,9 @@ class PerformLogReport(Report):
                 '{}日      '.format(foot['outside']),
                 ''
             ],
-            ['', '', '', '', '', '', '', '', '', '累計','日/180日']
+            ['', '', '', '', '', '', '', '', '', '累計',
+                '{}日/180日'.format(foot['outside_sum'])
+            ]
         ]
         table = Table(data, colWidths=colw, rowHeights=4.0*mm)
         table.setStyle([
