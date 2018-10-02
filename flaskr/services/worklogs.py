@@ -22,7 +22,7 @@ class WorkLogService(WorkLog):
         performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)
         performlog.sync_from_worklog(self)
         db.session.commit()
-    def update_api(self, tm):
+    def update_api(self, tm, outemp):
         hhmm = tm.strftime('%H:%M')
         if bool(self.work_in):
             self.work_out = hhmm
@@ -31,6 +31,8 @@ class WorkLogService(WorkLog):
             self.work_in = hhmm
         self.presented = True
         self.absence = False
+        if outemp:
+            self.outemp = True
         db.session.add(self)
         if not self.person.staff:
             performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)

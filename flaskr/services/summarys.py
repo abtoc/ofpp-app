@@ -24,6 +24,15 @@ class SummaryService:
             PerformLog.absence_add == True
         ).first()
         self.absence_add = q[0] if q[0] is not None else 0
+        # 施設外就労
+        q = db.session.query(
+           func.count(PerformLog.outemp)
+        ).filter(
+            PerformLog.person_id == self.id,
+            PerformLog.yymm == yymm,
+            PerformLog.outemp == True
+        ).first()
+        self.outemp = q[0] if q[0] is not None else 0
         # 勤務日数
         q = db.session.query(
             func.count(WorkLog.presented)

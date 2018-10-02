@@ -19,6 +19,9 @@ block content
             .form-group
                 label 終了時間
                 .form-control.disabled= item.work_out | do_not_show_none
+        if not ('outemp' in form)
+            if item.outemp
+                div: b 施設外就労
         +generate_fields(form)
         .btn-group
             input.btn.btn-default(type="submit" value="保存")

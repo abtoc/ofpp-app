@@ -9,17 +9,19 @@ block content
                 th 氏名
                 th 利用日数
                 th 欠席加算
+                th 施設外就労
                 th 勤務日数
                 th 勤務時間
-                th 欠勤日数
-                th 遅刻日数
-                th 早退日数
+                th 欠勤
+                th 遅刻
+                th 早退
         tbody
             for item in items
                 tr
                     td.text-center= item.person.name if item.person != None else ''
                     td.text-right= item.usedate
                     td.text-right= item.absence_add
+                    td.text-right= item.outemp
                     td.text-right= item.presented
                     td.text-right= item.value
                     td.text-right= item.absence
@@ -30,6 +32,7 @@ block content
                 td.text-center 合計
                 td.text-right= foot.usedate
                 td.text-right= foot.absence_add
+                td.text-right= foot.outemp
                 td.text-right= foot.presented
                 td.text-right= foot.value
                 td.text-right= foot.absence

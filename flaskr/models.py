@@ -205,6 +205,7 @@ class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     absence = db.Column(db.Boolean)                  # 欠勤
     late = db.Column(db.Boolean)                     # 遅刻
     leave = db.Column(db.Boolean)                    # 早退
+    outemp = db.Column(db.Boolean)                   # 施設外就労
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)

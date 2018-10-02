@@ -26,6 +26,7 @@ class WorkLogFormStaff(FlaskForm):
     absence = BooleanField('欠勤')
     late = BooleanField('遅刻')
     leave = BooleanField('早退')
+    outemp = BooleanField('施設外')
     remarks = StringField('備考')
     def populate_obj(self, obj):
         super().populate_obj(obj)

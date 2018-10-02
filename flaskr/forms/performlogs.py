@@ -60,7 +60,6 @@ class PerformLogForm(FlaskForm):
     pickup_in = BooleanField('送迎加算（往路）')
     pickup_out = BooleanField('送迎加算（復路）')
     meal = BooleanField('食事提供加算')
-    outemp = BooleanField('施設外就労')
     outside = BooleanField('施設外支援')
     visit = IntegerField('訪問支援特別加算（時間数）', validators=[Optional()])
     medical = IntegerField('医療連携体制加算', validators=[Optional()])
