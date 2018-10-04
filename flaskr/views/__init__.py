@@ -110,3 +110,5 @@ from flaskr.views.auth import bp
 app.register_blueprint(auth.bp)
 from flaskr.views.summarys import bp
 app.register_blueprint(summarys.bp)
+from flaskr.views.companies import bp
+app.register_blueprint(companies.bp)

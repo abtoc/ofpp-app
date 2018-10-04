@@ -35,6 +35,7 @@ html(lang="ja")
                                 li: a(href="{{ url_for('persons.index') }}") 利用者登録
                                 li: a(href="{{ url_for('recipients.index') }}") 受給者証登録
                                 li: a(href="{{ url_for('staffs.index') }}") 職員登録
+                                li: a(href="{{ url_for('companies.index') }}") 就労先企業登録
                                 if current_user.is_authenticated and current_user.is_admin()
                                     li: a(href="{{ url_for('users.index') }}") ユーザ登録
                         li.dropdown

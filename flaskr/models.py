@@ -324,3 +324,34 @@ class Option(db.Model):
         db.session.add(opt) 
     def __repr__(self):
         return '<Option: id={0.id}, name={0.name}, value={0.value}>'.format(self)
+
+# 施設外就労先企業
+class Company(db.Model, ModelMixInID):
+    __tablename__ = 'companies'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('id'),
+        {'mysql_engine': 'InnoDB'}
+    )
+    id = db.Column(db.String(36), default=_get_uuid)
+    enabled = db.Column(db.Boolean, nullable=False)     # 有効
+    name = db.Column(db.String(64), nullable=False)     # 名前
+    address = db.Column(db.String(128), nullable=False) # 住所
+    create_at = db.Column(db.DateTime, default=_get_now)
+    update_at = db.Column(db.DateTime, onupdate=_get_now)
+
+# 施設外就労契約内容
+class Agree(db.Model, ModelMixInID):
+    __tablename__ = 'agrees'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('id'),
+        db.ForeignKeyConstraint(['company_id'], ['companies.id']),
+        {'mysql_engine': 'InnoDB'}
+    )
+    id = db.Column(db.String(36), default=_get_uuid)
+    company_id = db.Column(db.String(36))
+    caption = db.Column(db.String(64), nullable=False)  # 表示名
+    agree_in = db.Column(db.Date, nullable=False)       # 契約開始
+    agree_out = db.Column(db.Date, nullable=False)      # 契約終了
+    content = db.Column(db.String(128), nullable=False) # 作業内容、作業場所
+    create_at = db.Column(db.DateTime, default=_get_now)
+    update_at = db.Column(db.DateTime, onupdate=_get_now)
