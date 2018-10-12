@@ -355,3 +355,10 @@ class Agree(db.Model, ModelMixInID):
     content = db.Column(db.String(128), nullable=False) # 作業内容、作業場所
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
+    @property
+    def company(self):
+        if hasattr(self, '__company'):
+            return self.__company
+        self.__company = Company.query.get(self.company_id)
+        return self.__company
+

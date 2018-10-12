@@ -112,3 +112,5 @@ from flaskr.views.summarys import bp
 app.register_blueprint(summarys.bp)
 from flaskr.views.companies import bp
 app.register_blueprint(companies.bp)
+from flaskr.views.agrees import bp
+app.register_blueprint(agrees.bp)

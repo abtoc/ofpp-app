@@ -1,0 +1,35 @@
+extends agrees/layout.pug
+
+block title
+  | 就労先契約一覧 - ペタペタシステム
+block content
+    table.table.table-hover
+        thead
+            tr
+                th 名前
+                th 就労先企業名
+                th 契約期間
+                th 作成日
+                th 更新日
+                th
+        tbody
+            for item in items
+                tr
+                    td= item.caption
+                    td= item.company.name
+                    td: {{ item.agree_in }}〜{{ item.agree_out }}
+                    td= item.create_at | strftime('%Y/%m/%d %H:%M')
+                    td= item.update_at | strftime('%Y/%m/%d %H:%M')
+                    td: .text-right: .btn-group
+                        a.btn-sm.btn-default(href="{{ url_for('agrees.edit', id=item.id) }}") 編集
+                        a.btn-sm.btn-default.confirm(href="{{ url_for('agrees.destroy', id=item.id) }}") 削除
+     script.
+        $(function(){
+            $(".confirm").on('click',function(){
+                if(window.confirm("データを削除してもよろしいですか？")){
+                    location.href = $(this).attr('href');
+                } else {
+                    return false;
+                }
+            });
+        });

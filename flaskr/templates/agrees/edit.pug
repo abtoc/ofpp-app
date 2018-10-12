@@ -1,8 +1,8 @@
 include _form.pug
-extends companies/layout.pug
+extends agrees/layout.pug
 
 block title
-    | 就労先企業編集
+    | 就労先契約編集
 block content
     form(method="POST")
         if id
@@ -12,4 +12,4 @@ block content
         +generate_fields(form)
         .btn-group
             input.btn.btn-default(type="submit" value="保存")
-            a.btn.btn-default(href="{{ url_for('companies.index') }}") キャンセル
+            a.btn.btn-default(href="{{ url_for('agrees.index') }}") キャンセル
