@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, IntegerField, HiddenField, ValidationError
+from wtforms import StringField, BooleanField, IntegerField, SelectField, HiddenField, ValidationError
 from wtforms.validators import Optional
 from flaskr.utils.validators import WorkTime
-from flaskr.models import WorkLog
+from flaskr.models import WorkLog, Company
 
 def check_absence_add(form, field):
     if (field.data) and (not form.absence.data):
@@ -17,11 +17,11 @@ class PerformLogFormIDM(FlaskForm):
     pickup_in = BooleanField('送迎加算（往路）')
     pickup_out = BooleanField('送迎加算（復路）')
     meal = BooleanField('食事提供加算')
-    outemp = BooleanField('施設外就労')
     outside = BooleanField('施設外支援')
     visit = IntegerField('訪問支援特別加算（時間数）', validators=[Optional()])
     medical = IntegerField('医療連携体制加算', validators=[Optional()])
     experience = IntegerField('体験利用支援加算（初日ー5日目は1，6日目ー１５日目は2）', validators=[Optional()])
+    company_id = SelectField('施設外就労先企業')
     remarks = StringField('備考')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,6 +30,14 @@ class PerformLogFormIDM(FlaskForm):
             worklog = WorkLog.query.get((obj.person_id, obj.yymm, obj.dd))
             if worklog is not None:
                 self.value_.data = worklog.value
+        self.company_id.choices = [('', '無し')] + [
+            (c.id, c.name)
+            for c in Company.query.filter(
+                Company.enabled == True
+            ).order_by(
+                Company.name
+            ).all()
+        ]
     def populate_obj(self, obj):
         super().populate_obj(obj)
         if not bool(obj.work_in):
@@ -38,6 +46,8 @@ class PerformLogFormIDM(FlaskForm):
             obj.work_out = None
         if not bool(obj.remarks):
             obj.remarks = None
+        if not bool(obj.company_id):
+            obj.company_id = None
     def validate_absence(form, field):
         if not field.data:
             return

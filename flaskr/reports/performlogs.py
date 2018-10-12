@@ -101,7 +101,7 @@ class PerformLogReport(Report):
             item['medical'] = log.medical
             item['experience'] = log.experience
             item['outside'] = 1 if bool(log.outside) else ''
-            item['outemp'] = 1 if bool(log.outemp) else ''
+            item['outemp'] = 1 if bool(log.company_id) else ''
             foot['pickup'] += 1 if bool(log.pickup_in) else 0
             foot['pickup'] += 1 if bool(log.pickup_out) else 0
             foot['visit'] += 1 if bool(log.visit) else 0
@@ -109,7 +109,7 @@ class PerformLogReport(Report):
             foot['medical'] += 1 if bool(log.medical) else 0
             foot['experience'] += 1 if bool(log.experience) else 0
             foot['outside'] += 1 if bool(log.outside) else 0
-            foot['outemp'] += 1 if bool(log.outemp) else 0
+            foot['outemp'] += 1 if bool(log.company_id) else 0
             if bool(self.usestart) and (log.presented):
                 foot['usestart'] += 1 if (log.date >= self.usestart) and (log.date <= self.usestart30d) else 0
             item['remarks'] = log.remarks

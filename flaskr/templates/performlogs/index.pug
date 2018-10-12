@@ -113,7 +113,7 @@ block content
                     td.text-center= '○' if item.meal else ''
                     td.text-center= item.medical | do_not_show_none
                     td.text-center= item.experience | do_not_show_none
-                    td.text-center= '○' if item.outemp else ''
+                    td.text-center= '○' if item.company_id else ''
                     td.text-center= '○' if item.outside else ''
                     td= item.remarks | do_not_show_none
                     td: .hidden-print: .btn-group

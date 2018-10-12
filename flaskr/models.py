@@ -91,6 +91,7 @@ class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
         db.ForeignKeyConstraint(['person_id'], ['persons.id']),
+        db.ForeignKeyConstraint(['company_id'], ['companies.id']),
         db.Index('performlogs_yymmdd', 'yymm', 'person_id', 'dd'),
         {'mysql_engine': 'InnoDB'}
     )
@@ -111,6 +112,7 @@ class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     experience = db.Column(db.Integer)               # 体験利用支援加算
     outside = db.Column(db.Boolean)                  # 施設外支援
     outemp = db.Column(db.Boolean)                   # 施設外就労
+    company_id = db.Column(db.String(36))            # 就労先企業
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)
@@ -190,6 +192,7 @@ class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     __table_args__ = (
         db.PrimaryKeyConstraint('person_id', 'yymm', 'dd'),
         db.ForeignKeyConstraint(['person_id'], ['persons.id']),
+        db.ForeignKeyConstraint(['company_id'], ['companies.id']),
         db.Index('worklogs_yymmdd', 'yymm', 'person_id', 'dd'),
         {'mysql_engine': 'InnoDB'}
     )
@@ -206,6 +209,7 @@ class WorkLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     late = db.Column(db.Boolean)                     # 遅刻
     leave = db.Column(db.Boolean)                    # 早退
     outemp = db.Column(db.Boolean)                   # 施設外就労
+    company_id = db.Column(db.String(36))            # 就労先企業
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
     update_at = db.Column(db.DateTime, onupdate=_get_now)

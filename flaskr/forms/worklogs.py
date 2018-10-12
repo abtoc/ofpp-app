@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, DecimalField, HiddenField, ValidationError
+from wtforms import StringField, BooleanField, DecimalField, SelectField, HiddenField, ValidationError
 from wtforms.validators import Optional
 from flaskr.utils.validators import WorkTime
+from flaskr.models import Company
 
 class WorkLogForm(FlaskForm):
     work_in_ = HiddenField()
@@ -26,8 +27,18 @@ class WorkLogFormStaff(FlaskForm):
     absence = BooleanField('欠勤')
     late = BooleanField('遅刻')
     leave = BooleanField('早退')
-    outemp = BooleanField('施設外')
+    company_id = SelectField('施設外就労先企業')    
     remarks = StringField('備考')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.company_id.choices = [('', '無し')] + [
+            (c.id, c.name)
+            for c in Company.query.filter(
+                Company.enabled == True
+            ).order_by(
+                Company.name
+            ).all()
+        ]
     def populate_obj(self, obj):
         super().populate_obj(obj)
         if not bool(obj.work_in):
@@ -36,6 +47,8 @@ class WorkLogFormStaff(FlaskForm):
             obj.work_out = None
         if not bool(obj.remarks):
             obj.remarks = None
+        if not bool(obj.company_id):
+            obj.company_id = None
     def validate_absence(form, field):
         if not field.data:
             return

@@ -15,9 +15,13 @@ class UserNewForm(FlaskForm):
     remarks = StringField('備考')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.person_id.choices = [(None, '無し')] + [(ps.id, ps.name)
+        self.person_id.choices = [('', '無し')] + [(ps.id, ps.name)
             for ps in Person.query.filter(Person.enabled==True).order_by(Person.name).all()
         ]
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.person_id):
+            obj.person_id = None
     def validate_userid(form, field):
         if len(field.data) == 0:
             return
@@ -34,6 +38,10 @@ class UserEditForm(FlaskForm):
     remarks = StringField('備考')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.person_id.choices = [(None, '無し')] + [(ps.id, ps.name)
+        self.person_id.choices = [('', '無し')] + [(ps.id, ps.name)
             for ps in Person.query.filter(Person.enabled==True).order_by(Person.name).all()
         ]
+    def populate_obj(self, obj):
+        super().populate_obj(obj)
+        if not bool(obj.person_id):
+            obj.person_id = None

@@ -1,20 +1,17 @@
 from datetime import datetime
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from flaskr.models import Person
 from flaskr.services.worklogs import WorkLogService
 from flaskr import app, db, auth, cache
 from flaskr.workers.worklogs import update_worklogs_value
 from flaskr.workers.performlogs import update_performlogs_enabled
-import re
 
 bp = Blueprint('api_idm', __name__, url_prefix='/api/idm')
 
-r = re.compile(r'^.+/out$')
-
-@bp.route('/<idm>/out', methods=['GET'])
+@bp.route('/<idm>/<company>', methods=['GET'])
 @bp.route('/<idm>', methods=['GET'])
 @auth.login_required
-def get(idm):
+def get(idm, company=None):
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
         return jsonify({ 'name': '該当者無し'}), 404
@@ -26,10 +23,10 @@ def get(idm):
     )
     return jsonify(result), 200
 
-@bp.route('/<idm>/out', methods=['POST'])
+@bp.route('/<idm>/<company>', methods=['POST'])
 @bp.route('/<idm>', methods=['POST'])
 @auth.login_required
-def post(idm):
+def post(idm, company=None):
     cache.set('person.id', None)
     cache.set('person.idm', None)
     cache.set('person.name', None)
@@ -41,7 +38,7 @@ def post(idm):
     dd = now.day
     worklog = WorkLogService.get_or_new(person.id, yymm, dd)
     try:
-        worklog.update_api(now, bool(r.match(request.path)))
+        worklog.update_api(now, company)
         update_worklogs_value.run(person.id, yymm, dd)
         if not person.staff:
             update_performlogs_enabled.delay(person.id, yymm)
@@ -61,10 +58,10 @@ def post(idm):
         )        
     return jsonify(result), 200
 
-@bp.route('/<idm>/out', methods=['DELETE'])
+@bp.route('/<idm>/<company>', methods=['DELETE'])
 @bp.route('/<idm>', methods=['DELETE'])
 @auth.login_required
-def delete(idm):
+def delete(idm, company=None):
     cache.set('person.id', None)
     cache.set('person.idm', None)
     cache.set('person.name', None)

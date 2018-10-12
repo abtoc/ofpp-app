@@ -43,7 +43,7 @@ def index(id, yymm):
         len([i for i in items if i.meal]),
         len([i for i in items if bool(i.medical) and i.medical > 0]),
         len([i for i in items if bool(i.experience) and i.experience > 0]),
-        len([i for i in items if i.outemp]),
+        len([i for i in items if bool(i.company_id)]),
         len([i for i in items if i.outside]),
     )
     kw = dict(
