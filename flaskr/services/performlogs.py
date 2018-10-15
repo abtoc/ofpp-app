@@ -49,7 +49,7 @@ class PerformLogService(PerformLog):
         self.absence_add = False
         self.work_in = worklog.work_in
         self.work_out = worklog.work_out
-        self.outemp = worklog.outemp
+        self.company_id = worklog.company_id
         self.presented = self.is_presented(worklog)
         self.enabled = self.is_enabled()
         db.session.add(self)
@@ -59,7 +59,7 @@ class PerformLogService(PerformLog):
     def sync_to_worklog(self, worklog):
         worklog.work_in = self.work_in
         worklog.work_out = self.work_out
-        worklog.outemp = self.outemp
+        worklog.company_id = self.company_id
         worklog.absence = self.absence
         worklog.presented = bool(worklog.work_in) or bool(worklog.work_out) or bool(worklog.value)
         db.session.add(worklog)

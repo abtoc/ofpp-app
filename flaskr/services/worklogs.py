@@ -31,9 +31,10 @@ class WorkLogService(WorkLog):
             self.work_in = hhmm
         self.presented = True
         self.absence = False
-        company = Company.get(company_id)
-        if bool(company):
-            self.company_id = company_id
+        if company_id is not None:
+            company = Company.get(company_id)
+            if bool(company):
+                self.company_id = company_id
         db.session.add(self)
         if not self.person.staff:
             performlog = PerformLogService.get_or_new(self.person_id, self.yymm, self.dd)

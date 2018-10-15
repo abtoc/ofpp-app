@@ -111,7 +111,6 @@ class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
     medical = db.Column(db.Integer)                  # 医療連携体制加算
     experience = db.Column(db.Integer)               # 体験利用支援加算
     outside = db.Column(db.Boolean)                  # 施設外支援
-    outemp = db.Column(db.Boolean)                   # 施設外就労
     company_id = db.Column(db.String(36))            # 就労先企業
     remarks = db.Column(db.String(128))              # 備考
     create_at = db.Column(db.DateTime, default=_get_now)
@@ -134,6 +133,12 @@ class PerformLog(db.Model, ModelMixInID, ModelMixInYYMMDD):
         if hasattr(self, '__absencelog'):
             return self.__absencelog
         self.__absencelog = AbsenceLog.query.get((self.person.id, self.yymm, self.dd))
+    @property
+    def company(self):
+        if hasattr(self, '__company'):
+            return self.__company
+        self.__company = Company.query.get(self.company_id) if bool(self.company_id) else None
+        return self.__company
     @property
     def url_edit(self):
         return url_for('performlogs.edit', id=self.person_id, yymm=self.yymm, dd=self.dd)
