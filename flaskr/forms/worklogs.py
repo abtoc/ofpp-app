@@ -52,7 +52,7 @@ class WorkLogFormStaff(FlaskForm):
     def validate_absence(form, field):
         if not field.data:
             return
-        if bool(form.work_in) or bool(form.work_out) or bool(form.value):
+        if bool(form.work_in.data) or bool(form.work_out.data) or bool(form.value.data):
             raise ValidationError('勤務時間が設定されているため欠勤にチェックできません')
     def validate_work_out(form, field):
         if not bool(form.work_in.data):
