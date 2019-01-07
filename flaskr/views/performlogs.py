@@ -1,3 +1,4 @@
+from datetime import date
 from dateutil.relativedelta import relativedelta
 from collections import namedtuple
 from io import BytesIO
@@ -26,7 +27,7 @@ def index(id, yymm):
     first = today
     last = first + relativedelta(months=1)
     prev = first - relativedelta(months=1)
-    this = date_x()
+    this = date.today()
     items = []
     while first.date < last.date:
         ym = first.date.strftime('%Y%m')
@@ -53,7 +54,7 @@ def index(id, yymm):
         name = person.display_or_name,
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
-        this = this.date.strftime('%Y%m'),
+        this = this.strftime('%Y%m'),
         items = items,
         foot = foot
     )

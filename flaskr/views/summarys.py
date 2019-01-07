@@ -34,7 +34,7 @@ def index(yymm):
     first = today
     last = first + relativedelta(months=1)
     prev = first - relativedelta(months=1)
-    this = date_x()
+    this = date.today()
     items = SummaryService.get_all(yymm)
     foot = make_foot(items)
     kw = dict(
@@ -56,7 +56,7 @@ def report(yymm):
     foot = make_foot(items)
     kw = dict(
         yymm = yymm,
-        today = today.date,
+        today = today,
         items = items,
         foot = foot
     )
