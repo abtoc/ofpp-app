@@ -42,7 +42,7 @@ def index(yymm):
         today = today.date,
         prev = prev.date.strftime('%Y%m'),
         next = last.date.strftime('%Y%m'),
-        this = this.date.strftime('%Y%m'),
+        this = this.strftime('%Y%m'),
         items = items,
         foot = foot
     )
