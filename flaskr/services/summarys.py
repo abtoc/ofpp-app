@@ -84,8 +84,7 @@ class SummaryService:
     @classmethod
     def get_all(cls, yymm):
         persons = Person.query.filter(
-            Person.staff == False,
-            Person.enabled == True
+            Person.staff == False
         ).order_by(
             Person.name
         ).all()
