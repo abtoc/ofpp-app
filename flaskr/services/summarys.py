@@ -91,6 +91,9 @@ class SummaryService:
         ).all()
         items = []
         for person in persons:
-            items.append(SummaryService(person.id, yymm))
+            service = SummaryService(person.id, yymm)
+            if (person.enabled == False) and (service.usedate <= 0):
+                continue
+            items.append(service)
         return items
 
