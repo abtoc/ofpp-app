@@ -73,12 +73,16 @@ class Recipient(db.Model, ModelMixInID):
         self.__person = Person.query.get(self.person_id)
         return self.__person
     def is_supply_over(self):
+        if not self.person.enabled:
+            return False
         if not bool(self.supply_out):
             return False
         dead = date.today()
         dead += relativedelta(months=1)
         return self.supply_out < dead
     def is_apply_over(self):
+        if not self.person.enabled:
+            return False
         if not bool(self.apply_out):
             return False
         dead = date.today()
