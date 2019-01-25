@@ -84,13 +84,15 @@ class SummaryService:
     @classmethod
     def get_all(cls, yymm):
         persons = Person.query.filter(
-            Person.staff == False,
-            Person.enabled == True
+            Person.staff == False
         ).order_by(
             Person.name
         ).all()
         items = []
         for person in persons:
-            items.append(SummaryService(person.id, yymm))
+            service = SummaryService(person.id, yymm)
+            if (person.enabled == False) and (service.usedate <= 0):
+                continue
+            items.append(service)
         return items
 
