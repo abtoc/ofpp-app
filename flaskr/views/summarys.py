@@ -56,7 +56,7 @@ def report(yymm):
     foot = make_foot(items)
     kw = dict(
         yymm = yymm,
-        today = today,
+        today = today.date,
         items = items,
         foot = foot
     )
