@@ -34,7 +34,7 @@ class PerformLogReport(Report):
             gg = '平成' 
             gy = self.yy - 1988
         head = {}
-        head['gm'] = '{}{}年{}月分'.format(gg, gy, self.mm)
+        head['gm'] = '{}{:02}年{}月分'.format(gg, gy, self.mm)
         head['name'] = self.person.name
         head['idm'] = self.person.idm
         head['number'] = self.recipient.number
