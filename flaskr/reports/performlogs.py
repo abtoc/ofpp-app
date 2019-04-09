@@ -27,9 +27,14 @@ class PerformLogReport(Report):
         psize = portrait(A4)
         super().__call__(output, psize)
     def make_head(self):
-        gg = self.yy - 1988
+        if (self.yy >= 2019) and (self.mm >= 5):
+            gg = '令和'
+            gy = self.yy - 2018
+        else:
+            gg = '平成' 
+            gy = self.yy - 1988
         head = {}
-        head['gm'] = '平成{}年{}月分'.format(gg,self.mm)
+        head['gm'] = '{}{}年{}月分'.format(gg, gy, self.mm)
         head['name'] = self.person.name
         head['idm'] = self.person.idm
         head['number'] = self.recipient.number
