@@ -27,7 +27,7 @@ class PerformLogReport(Report):
         psize = portrait(A4)
         super().__call__(output, psize)
     def make_head(self):
-        if (self.yy >= 2019) and (self.mm >= 5):
+        if self.yymm >= '201905':
             gg = '令和'
             gy = self.yy - 2018
         else:
