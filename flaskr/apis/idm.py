@@ -15,6 +15,8 @@ def get(idm, company=None):
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
         return jsonify({ 'name': '該当者無し'}), 404
+    if not person.enabled:
+        return jsonify({ 'name': '該当者無し'}), 404
     cache.set('person.id', person.id)
     cache.set('person.idm', person.idm)
     cache.set('person.name', person.display_or_name)
@@ -32,6 +34,8 @@ def post(idm, company=None):
     cache.set('person.name', None)
     person = Person.query.filter(Person.idm == idm).first()
     if person is None:
+        return jsonify({ 'name': '該当者無し'}), 404
+    if not person.enabled:
         return jsonify({ 'name': '該当者無し'}), 404
     now = datetime.now()
     yymm = now.strftime('%Y%m')
